@@ -1,0 +1,33 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+# Based on https://eteamspace.internal.ericsson.com/display/ACD/Kube-bench
+KubeBench:
+  #    This configuration support ENV variables
+  #    The environment variables must have !ENV before them and be in this format to be parsed: ${VAR_NAME}.
+  #    E.g.:
+  #    scanner:
+  #        arm_path: !ENV 'https://arm.sel..${PROD}:${VER}'
+  #        something_else: !ENV '${AWESOME_ENV_VAR}/var/${A_SECOND_AWESOME_VAR}'
+  Product: 'eric-oss-assurance-indexer Application' #Node/TPG Name(this is an optional parameter now, newly added for analytics)
+  Product_internal: 'eric-oss-assurance-indexer' #Product name
+  Product_contact: "PDLTHEAGGR@pdl.internal.ericsson.com" #Email of the SPOC or DL
+  KubeconfigFile: config # ------ The parameter is deprecated and will be removed in future versions.
+  Targets: 'all' #Other Options: master,controlplane,node,etcd,policies # one or more by comma separated.
+  Version: '' #1.19, 1.17  #Only if you want to override the default option.
+  Timeout: '120' #Max Wait time in seconds for the Pod to become successful, 120 secs is default.
+  DisplayReportConsole: False #Make it true if you want the reports to be displayed in console
+  Namespace: !ENV '${NAMESPACE}' #Mandate Option to be filled.Enter the respective namespace to which you have access and which exists.

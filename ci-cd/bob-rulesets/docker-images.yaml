@@ -1,0 +1,64 @@
+modelVersion: 2.0
+
+
+description: |
+    Image catalog shared across all rulesets
+    For more information see:
+        https://eteamspace.internal.ericsson.com/display/ACD/ADP+CICD+Docker+Image+Catalog
+
+
+docker-images:
+  # Builders
+  - java17mvnbuilder: ${env.IMAGE_JAVA17MVNBUILDER}
+
+  # Tools
+  - adp-image-dr-check: ${env.IMAGE_ADP_IMAGE_DR_CHECK}
+  - adp-helm-dr-check: ${env.IMAGE_ADP_HELM_DR_CHECK}
+  - adp-int-helm-chart-auto: ${env.IMAGE_ADP_INT_HELM_CHART_AUTO}
+  - adp-release-auto: ${env.IMAGE_ADP_RELEASE_AUTO}
+  - py3kubehelmbuilder: ${env.IMAGE_PY3KUBEHELMBUILDER}
+  - va-image-scanning-grype: ${env.IMAGE_VA_IMAGE_SCANNING_GRYPE}
+  - hadolint-scan: ${env.IMAGE_HADOLINT_SCAN}
+  - va-scan-kubeaudit: ${env.IMAGE_VA_SCAN_KUBEAUDIT}
+  - va-scan-kubebench: ${env.IMAGE_VA_SCAN_KUBEBENCH}
+  - va-scan-kubesec: ${env.IMAGE_VA_SCAN_KUBESEC}
+  - va-scan-kubehunter: ${env.IMAGE_VA_SCAN_KUBEHUNTER}
+  - trivy-inline-scan: ${env.IMAGE_TRIVY_INLINE_SCAN}
+
+
+properties:
+  # Builders
+  - java17mvnbuilder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-java17mvnbuilder:latest
+
+  # Tools
+  - adp-image-dr-check: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/adp-image-dr-check:latest
+  - adp-helm-dr-check: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/adp-helm-dr-checker:latest
+  - adp-int-helm-chart-auto: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/adp-int-helm-chart-auto:latest
+  - adp-release-auto: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-adp-release-auto:latest
+  - py3kubehelmbuilder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-py3kubehelmbuilder:latest
+  - va-image-scanning-grype: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-image-scanning-grype:latest
+  - hadolint-scan: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/hadolint-scan:latest
+  - va-scan-kubeaudit: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubeaudit:latest
+  - va-scan-kubebench: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubebench:latest
+  - va-scan-kubesec: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubesec:latest
+  - va-scan-kubehunter: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubehunter:latest
+  - trivy-inline-scan: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/trivy-inline-scan:latest
+
+
+env:
+  # Builders
+  - IMAGE_JAVA17MVNBUILDER (default=${java17mvnbuilder})
+
+  # Tools
+  - IMAGE_ADP_IMAGE_DR_CHECK (default=${adp-image-dr-check})
+  - IMAGE_ADP_HELM_DR_CHECK (default=${adp-helm-dr-check})
+  - IMAGE_ADP_INT_HELM_CHART_AUTO (default=${adp-int-helm-chart-auto})
+  - IMAGE_ADP_RELEASE_AUTO (default=${adp-release-auto})
+  - IMAGE_PY3KUBEHELMBUILDER (default=${py3kubehelmbuilder})
+  - IMAGE_VA_IMAGE_SCANNING_GRYPE (default=${va-image-scanning-grype})
+  - IMAGE_HADOLINT_SCAN (default=${hadolint-scan})
+  - IMAGE_VA_SCAN_KUBEAUDIT (default=${va-scan-kubeaudit})
+  - IMAGE_VA_SCAN_KUBEBENCH (default=${va-scan-kubebench})
+  - IMAGE_VA_SCAN_KUBESEC (default=${va-scan-kubesec})
+  - IMAGE_VA_SCAN_KUBEHUNTER (default=${va-scan-kubehunter})
+  - IMAGE_TRIVY_INLINE_SCAN (default=${trivy-inline-scan})

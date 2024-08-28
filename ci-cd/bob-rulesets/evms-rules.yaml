@@ -1,0 +1,139 @@
+modelVersion: 2.0
+
+
+description: "Ericsson Vulnerability Management Service Rules"
+
+
+import:
+  images: docker-images.yaml
+  common: common-rules.yaml
+
+
+properties:
+  - enable-auto-answering: "false"
+  - evms-product-name: "EMPTY"
+  - evms-2pp-dependencies-file: "EMPTY"
+  - evms-3pp-dependencies-file: "EMPTY"
+  - evms-server : ${env.EVMS_SERVER}
+  - evms-checker-html-dir: ${common.ci-html-reports-directory}/evms
+  - evms-archive-dir: ${common.ci-artifacts-directory}/evms
+  - evms-product-version: "EMPTY"
+
+  - evms-username: ${env.EVMS_USERNAME}
+  - evms-api-key: ${env.EVMS_API_KEY}
+
+
+env:
+  - EVMS_USERNAME(default=)
+  - EVMS_PASSWORD(default="")
+  - EVMS_API_KEY(default=)
+  - EVMS_SERVER(default="https://evms.internal.ericsson.com/")
+  - DRY_RUN (default=false)
+
+
+rules:
+  evms-preregistration:
+    - task: pre-register-enable-auto-answering
+      condition: conditions:enable-auto-answering
+      docker-image: images.adp-release-auto
+      cmd: dependencies pre-register
+                        --evms
+                        --evms-user ${evms-username}
+                        --evms-api-key ${evms-api-key}
+                        --evms-product-name "${evms-product-name}"
+                        --evms-product-version ${evms-product-version}
+                        --evms-server ${evms-server}
+                        --enable-auto-answering
+                        --dependencies ${evms-2pp-dependencies-file}
+                        --dependencies ${evms-3pp-dependencies-file}
+                        --dry-run ${env.DRY_RUN}
+                        --debug
+
+    - task: pre-register-dont-enable-auto-answering
+      condition: conditions:dont-enable-auto-answering
+      docker-image: images.adp-release-auto
+      cmd: dependencies pre-register
+                        --evms
+                        --evms-api-key ${evms-api-key}
+                        --evms-product-name "${evms-product-name}"
+                        --evms-product-version ${evms-product-version}
+                        --evms-server ${evms-server}
+                        --dependencies ${evms-2pp-dependencies-file}
+                        --dependencies ${evms-3pp-dependencies-file}
+                        --dry-run ${env.DRY_RUN}
+
+
+  evms-registration:
+    - task: register-enable-auto-answering
+      condition: conditions:enable-auto-answering
+      docker-image: images.adp-release-auto
+      cmd: dependencies register
+                        --evms
+                        --evms-user ${evms-username}
+                        --evms-api-key ${evms-api-key}
+                        --evms-product-name "${evms-product-name}"
+                        --evms-product-version ${evms-product-version}
+                        --evms-server ${evms-server}
+                        --enable-auto-answering
+                        --dependencies ${evms-2pp-dependencies-file}
+                        --dependencies ${evms-3pp-dependencies-file}
+                        --dry-run ${env.DRY_RUN}
+                        --debug
+
+    - task: register-dont-enable-auto-answering
+      condition: conditions:dont-enable-auto-answering
+      docker-image: images.adp-release-auto
+      cmd: dependencies register
+                        --evms
+                        --evms-api-key ${evms-api-key}
+                        --evms-product-name "${evms-product-name}"
+                        --evms-product-version ${evms-product-version}
+                        --evms-server ${evms-server}
+                        --dependencies ${evms-2pp-dependencies-file}
+                        --dependencies ${evms-3pp-dependencies-file}
+                        --dry-run ${env.DRY_RUN}
+
+    - rule: evms-checker
+
+
+  evms-generate-csv:
+    - task: generate
+      description: generate csv for manual upload (for troubleshooting and verification)
+      docker-image: images.adp-release-auto
+      cmd:
+          - mkdir -p ${evms-archive-dir}
+          - dependencies generate
+                        --evms
+                        --format csv
+                        --evms-product-name "${evms-product-name}"
+                        --evms-product-version ${evms-product-version}
+                        --dependencies ${evms-2pp-dependencies-file}
+                        --dependencies ${evms-3pp-dependencies-file}
+                        --output-directory ${evms-archive-dir}
+
+
+  evms-checker:
+    # --evms-password "NOTAPASSWORD" - Hack due to issue ADPPRG-93591. Should not be needed when issue is fixed.
+    - task: cbos-check-test
+      description: Checks if ADP microservice is registered in EVMS and if cbos is used.
+      docker-image: images.adp-release-auto
+      cmd:
+          - mkdir -p ${evms-checker-html-dir}
+          - check-evms registration
+                        --evms-user ${evms-username}
+                        --evms-password "NOTAPASSWORD"
+                        --evms-api-key ${evms-api-key}
+                        --evms-server ${evms-server}
+                        -v ${evms-product-version}
+                        -n "${evms-product-name}"
+                        --output-directory ${evms-checker-html-dir}
+                        --check-cbos
+                        --debug
+                        --report-format html
+
+
+  conditions:
+    - task: enable-auto-answering
+      cmd: test "${enable-auto-answering}" = "true"
+    - task: dont-enable-auto-answering
+      cmd: test "${enable-auto-answering}" = "false"

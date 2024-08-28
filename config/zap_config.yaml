@@ -1,0 +1,58 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: 2.0
+
+zapConfig:
+  baseUrl: "http://eric-oss-assurance-indexer:8080"
+  # scanType: "full"
+  scanType: "api"
+  config_dir: "generated/configs/zap-config"
+  globalConfig:
+#    - id: "100000"
+#      action: "IGNORE"
+#      message: "A Server Error response code was returned by the server"
+  endpoints:
+# Pipeline fails when 3 or more are tested at the same time, 2 is intermittent
+# so it is recommended to test endpoints one at a time.
+# Failing since rebase, I suspect may be tls based on comments Li An had previously.
+# Will look into next time I need to run the scan or earlier if I have time.
+    - name: "indexer"
+      url: "/v1/indexer-info/indexer"
+#    - name: "indexerList"
+#      url: "/v1/indexer-info/indexer-list"
+#    - name: "searchEngineIndexList"
+#      url: "/v1/indexer-info/search-engine-index-list"
+#    - name: "fields"
+#      url: "/v1/indexer-info/spec/fields"
+#    - name: "fullContexts"
+#      url: "/v1/indexer-info/spec/fullcontexts"
+#    - name: "valueForFullcontext"
+#      url: "/v1/indexer-info/spec/value-for-fullcontext"
+#    - name: "valuesForFullcontext"
+#      url: "/v1/indexer-info/spec/values-for-fullcontext"
+#    - name: "fullcontextsForValue"
+#      url: "/v1/indexer-info/spec/fullcontexts-for-value"
+  report:
+    dir: "build/va-reports/zap-reports"
+    format:
+      - html
+      - json
+      - md
+      - xml
+  properties:
+    zap_container_port: 9625
+  timeout: 4

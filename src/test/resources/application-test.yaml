@@ -1,0 +1,33 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+adp-file-watcher:
+  pooling-interval: 1 # poll every second for filesystem changes
+
+adp-certificate:
+  discovery:
+    root-read-path: target/security
+    root-write-path: target/security
+    keystore-relative-dir: keystore
+    truststore-relative-dir: truststore
+
+logging:
+  config: ${LOGBACK_CONFIG_FILE:classpath:logback-plain-text.xml}
+
+ericsson:
+  logging:
+    runtime-level-control:
+      enabled: false

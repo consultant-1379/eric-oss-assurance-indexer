@@ -1,0 +1,148 @@
+#
+# COPYRIGHT Ericsson 2021
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+server:
+  shutdown: graceful
+
+#Metrics related configurations
+management:
+  info:
+    env:
+      enabled: "true"
+  endpoint:
+    health:
+      group:
+        liveness:
+          include: livenessCheck
+        readiness:
+          include: ping
+      show-details: "always"
+    metrics:
+      enabled: "true"
+    prometheus:
+      enabled: "true"
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  prometheus:
+    metrics:
+      export:
+        enabled: "true"
+  metrics:
+    enable:
+      jvm: "true"
+    web:
+      server:
+        auto-time-requests: "true"
+
+#opentracing.jaeger.enabled: "true"
+
+spring:
+  config:
+    location: "src/main/resources/application.yaml"
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  # graceful shutdown wait period for serving in-flight requests
+  lifecycle:
+    timeout-per-shutdown-phase: ${GRACEFUL_SHUTDOWN_TIMEOUT:30s}
+
+endpoints.health.sensitive: "false"
+info.app.name: '@name@'
+info.app.description: "Microservice chassis app"
+info.app.version: '@version@'
+info.app.legal: "COPYRIGHT Ericsson 2021 -
+ The copyright to the computer program(s) herein is the property of
+ Ericsson Inc. The programs may be used and/or copied only with written
+ permission from Ericsson Inc. or in accordance with the terms and
+ conditions stipulated in the agreement/contract under which the
+ program(s) have been supplied."
+
+#See more details about pattern layout: https://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
+#See more details about logging.pattern.level : https://docs.spring.io/spring-boot/docs/2.5.2/reference/html/features.html#features.logging.custom-log-configuration
+#logging.pattern.level: "%5p [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}][%X{userName}]"
+
+#Set the stubrunner credentials:
+#stubrunner.username: <LAN SIGNUM ID>
+#stubrunner.password: <LAN encripted PWD or JFrog API Key>
+stubrunner.username: ${SELI_ARTIFACTORY_REPO_USER}
+stubrunner.password: ${SELI_ARTIFACTORY_REPO_PASS}
+
+# ADP chassis component configuration.
+adp-metrics:
+  prefix: ais
+
+logging:
+  level:
+    com.ericsson: debug #for local deployment logging level #replace this with with logback file
+  config: ${LOGBACK_CONFIG_FILE:classpath:logback-json.xml}
+
+ericsson:
+  logging:
+    runtime-level-control:
+      enabled: ${RUN_TIME_LEVEL_CONTROL:true}
+
+#kafka + open-search params will be replaced by values.yaml versions when on cluster
+kafka:
+  group-id: ${KAFKA_GROUPID:indexer-007}
+  bootstrap-servers: ${KAFKA_BOOTSTRAPSERVERS:eric-oss-dmm-kf-op-sz-kafka-bootstrap:9092}
+  schema-registry-url: ${KAFKA_SCHEMAREGISTRYURL:http://eric-schema-registry-sr:8081}
+  auto-offset-reset-config: ${KAFKA_AUTOOFFSETRESETCONFIG:earliest}
+  enable-auto-commit-config: ${KAFKA_ENABLEAUTOCOMMITCONFIG:false}
+
+open-search:
+  client:
+    host: ${OPENSEARCH_HOST:eric-data-search-engine}
+    port: ${OPENSEARCH_PORT:9200}
+    scheme: ${OPENSEARCH_SCHEME:http}
+  client-tls:
+    host: ${OPENSEARCH_HOST:eric-data-search-engine-tls}
+    port: ${OPENSEARCH_PORT:9200}
+    scheme: ${OPENSEARCH_SCHEME:https}
+
+health:
+  grace-count: 10 # Number of times to report OK unconditionally before reporting actual health
+
+
+# Default port is set to 8080
+# When tls enabled setting http port enables both HTTP and HTTPS schemes for Tomcat
+#server:
+#  port: 8080
+
+security:
+  tls:
+    enabled: ${TLS_ENABLED:false}
+    port: ${HTTPS_PORT:8443}
+    #  NONE: Client authentication is not wanted.
+    #  WANT: Client authentication is wanted but not mandatory.
+    #  NEED: Client authentication is needed and mandatory.
+    #  clientAuth: NEED # by default client auth is needed and mandatory for mTLS
+    keystoreType: pkcs12
+
+# Currently,for adp-certificate.strategy only supported value is external-tools which uses openssl binaries
+# To test locally, openssl should be installed in the OS
+adp-certificate:
+  strategy: external-tools
+  discovery:
+    root-read-path: ${TLS_READ_ROOT_PATH}
+    root-write-path: ${TLS_WRITE_ROOT_PATH}
+    keystore-relative-dir: ${KEYSTORE_REL_DIR}
+    truststore-relative-dir: ${TRUSTSTORE_REL_DIR}
+    keyExtensionFilter: "*.pem, *.crt"
+    caExtensionFilter: "*.pem, *.crt"
+    password: "changeit"
+    keyPassword: "changeit"

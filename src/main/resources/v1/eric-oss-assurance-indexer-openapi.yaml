@@ -1,0 +1,825 @@
+#
+# COPYRIGHT Ericsson 2021
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+openapi: 3.0.3
+info:
+  title: IF.OSS_AIR.INDEX.REG
+  description: |-
+    Add DMM records as documents to a Search Engine index.
+  contact:
+    email: kapil.nayar@ericsson.com
+  license:
+    name: Commercial
+  version: 1.0.3
+servers:
+  - url: http://eric-oss-assurance-indexer:8080
+  - url: http://localhost:8080
+paths:
+  /v1/indexer-info/indexer:
+    put:
+      tags:
+        - Indexer
+      summary: |-
+        Register an Indexer, which will read DMM records and add corresponding documents to a
+        target SearchEngineIndex.
+      description: |-
+        Register an indexer, which will read DMM records and add corresponding documents a
+        target Search Engine index. If the indexer does not already exist, create it. If a previous
+        indexer of the same name exists, overwrite it. It is backward compatible with POST.
+      operationId: putIndexer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Indexer'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad Request - see status code and problem object for more information.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable
+    get:
+      tags:
+        - Indexer
+      summary: Get a specific Indexer by name
+      operationId: getIndexer
+      parameters:
+        - name: name
+          in: query
+          description: Name of the indexer
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Indexer'
+        '400':
+          description: Invalid indexer name
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Indexer name not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable
+    delete:
+      tags:
+        - Indexer
+      summary: Deletes an Indexer
+      description: |-
+        Deletes an Indexer, effectively stopping the writing of documents to the target index.
+        Does not delete the SearchEngineIndex created by the Indexer.
+      operationId: deleteIndexer
+      parameters:
+        - name: name
+          in: query
+          description: Name of the indexer
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Indexer'
+        '400':
+          description: Invalid indexer name
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Indexer name not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable
+  /v1/indexer-info/indexer-list:
+    get:
+      tags:
+      - Indexer List
+      summary: Get the list of registered Indexer(s)
+      operationId: getIndexerList
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndexerRef'
+        '503':
+          description: Service temporarily unavailable
+  /v1/indexer-info/search-engine-index-list:
+    get:
+      tags:
+      - SearchEngineIndex List
+      summary: Get the list of registered SearchEngineIndex(s)
+      operationId: getSearchEngineIndexList
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchEngineIndex'
+        '503':
+          description: Service temporarily unavailable
+  /v1/indexer-info/spec/fields:
+    get:
+      tags:
+      - Document Specifications
+      summary: Get the list of fields for a SearchEngineIndex
+      operationId: getFields
+      parameters:
+        - name: searchEngineIndexName
+          in: query
+          description: Name of the SearchEngineIndex
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FieldSpec'
+        '400':
+          description: Invalid searchEngineIndexName
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: searchEngineIndexName not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable
+  /v1/indexer-info/spec/fullcontexts:
+    get:
+      tags:
+      - Document Specifications
+      summary: Get the list of all FullContextSpec for a given SearchEngineIndex
+      operationId: getFullContexts
+      parameters:
+        - name: searchEngineIndexName
+          in: query
+          description: Name of the SearchEngineIndex
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FullContextSpec'
+        '400':
+          description: Invalid searchEngineIndexName
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: searchEngineIndexName not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable
+  /v1/indexer-info/spec/value-for-fullcontext:
+    get:
+      tags:
+      - Document Specifications
+      summary: Get information about the index document for a ValueField in a specific FullContext.
+      operationId: getValueForFullContext
+      parameters:
+        - name: searchEngineIndexName
+          in: query
+          description: Name of the SearchEngineIndex.
+          required: true
+          schema:
+            type: string
+        - name: valueName
+          in: query
+          description: |-
+            The name for the ValueField.
+          required: true
+          schema:
+            type: string
+        - name: fullContextName
+          in: query
+          example: 'ContextFieldA-name_ContextFieldB-name'
+          description: |-
+            The name of the FullContext for the ValueField.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ValueContextSpec'
+        '400':
+          description: Invalid searchEngineIndexName, valueName, or fullContextName.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: searchEngineIndexName, valueName, or fullContextName not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable.
+  /v1/indexer-info/spec/values-for-fullcontext:
+    get:
+      tags:
+      - Document Specifications
+      summary: Get all the ValueContextSpec for the index documents in a SearchEngineIndex given a specific FullContext.
+      operationId: getValuesForFullContext
+      parameters:
+        - name: searchEngineIndexName
+          in: query
+          description: Name of the SearchEngineIndex.
+          required: true
+          schema:
+            type: string
+        - name: fullContextName
+          in: query
+          example: 'ContextFieldA-name_ContextFieldB-name'
+          description: |-
+            The name of the FullContext for which ValueContextSpec will be returned.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValueContextSpec'
+        '400':
+          description: Invalid searchEngineIndexName, or fullContextName.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: searchEngineIndexName or fullContextName not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable.
+  /v1/indexer-info/spec/fullcontexts-for-value:
+    get:
+      tags:
+      - Document Specifications
+      summary: Get the list of FullerContext(s) for a ValueField in a SearchEngineIndex
+      operationId: getFullContextsForValue
+      parameters:
+        - name: searchEngineIndexName
+          in: query
+          description: Name of the SearchEngineIndex.
+          required: true
+          schema:
+            type: string
+        - name: valueName
+          in: query
+          description: |-
+            The name of the ValueField.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FullContextSpec'
+        '400':
+          description: Invalid searchEngineIndexName or valueName.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: searchEngineIndexName or valueName not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service temporarily unavailable.
+components:
+  schemas:
+    Indexer:
+      type: object
+      required: [name, source, writers, target]
+      properties:
+        name:
+          type: string
+          nullable: false
+          minLength: 1
+          maxLength: 512
+          example: 'nameOfIndexerA'
+          description: Unique name for the Indexer.
+        description:
+          type: string
+          example: "Description of Indexer A"
+          description: Description of the indexer
+        source:
+          $ref: '#/components/schemas/DataSource'
+        target:
+          $ref: '#/components/schemas/SearchEngineIndex'
+        writers:
+          type: array
+          nullable: false
+          minItems: 1
+          # validate non-empty array
+          items:
+            $ref: '#/components/schemas/Writer'
+    IndexerRef:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          nullable: false
+          example: 'nameOfIndexerA'
+          description: Unique name of an Indexer.
+        description:
+          type: string
+          example: "Description of Indexer A"
+          description: Description of the indexer
+    DataSource:
+      type: object
+      nullable: false
+      description: |-
+        The source of input records. The DataSource will effectively define how to read the
+        source and map the fields into a flat list of name/value pairs to be processed by the Writers.
+      required: [name]
+      properties:
+        type:
+          type: string
+          default: pmstatsexporter
+          enum:
+            - pmstatsexporter
+          description: The type of the data source that is writing the input records.
+        name:
+          type: string
+          nullable: false
+          example: "kafka-topic-a-name"
+          description: The "name" field represents the name of the Kafka topic associated with input records. This string type parameter is non-nullable, it must be provided.
+    SearchEngineIndex:
+      type: object
+      nullable: false
+      description: |-
+        The Search Engine index where documents will be written. This is an index instance in the ADP Search Engine.
+      required: [name]
+      properties:
+        name:
+          type: string
+          nullable: false
+          pattern: '^[^A-Z-_,:\"*+/\\|?\#>< ][^A-Z,:\"*+/\\|?\#>< ]+'
+          minLength: 1
+          maxLength: 255
+          example: "search_index_a_name"
+          description: |-
+            The name of the Search Engine index.
+        displayName:
+          type: string
+          example: "SearchIndexA_DisplayName"
+          description: The name of the index displayed to an external user. Should default to 'name'.
+        indexDescription:
+          type: string
+          example: "SearchIndexA Description"
+          description: A description of the Indexer
+    Writer:
+      type: object
+      nullable: false
+      description: |-
+        Will add a document for each value found in the input record.
+        Will replace any existing document if the context fields are the same for a value.
+      required: [name,inputSchema,value]
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Name must be unique within the Indexer.
+          example: 'writerA_name'
+        inputSchema:
+          type: string
+          example: 'writerA_schemaRegistryName'
+          description: The name of schema for the input records as stored in the Schema Registry SR (APR 201 492)
+        context:
+          type: array
+          example: [ { name: 'contextFieldA-name'}, { name: 'contextFieldB-name'} ]
+          description: These are the fields in the input record that give navigation context to the indexed documents.
+          items:
+            $ref: '#/components/schemas/ContextField'
+        value:
+          type: array
+          minItems: 1
+          description: |-
+            These are the fields in the input record that provide the KPI values stored on the document.
+            Each value will create a unique document.
+            The id of the document shall be <value-name>__<context1name>_<context1value>__<context2name>...etc
+            where the context names are sorted alphabetically so as to make it unique and derivable.
+          items:
+            $ref: '#/components/schemas/ValueField'
+        info:
+          type: array
+          description: |-
+            These are the fields in the input record that provide non-context fields for the document.
+            They can be used for ranking/filtering results.
+          items:
+            $ref: '#/components/schemas/InfoField'
+    ContextField:
+      type: object
+      nullable: false
+      description: A field in the input record that gives navigation context to the indexed documents.
+      required: [name]
+      properties:
+        name:
+          type: string
+          nullable: false
+          example: 'contextFieldA-name'
+          description: |-
+            The name of the ContextField in the index document.
+        displayName:
+          type: string
+          example: 'Context Field A'
+          description: |-
+            Defaults to the 'name' field.
+            An alias for the name of the ContextField that may be more friendly for interactive display.
+            This field is ignored if the nameType=colonSeparated; in which case the displayName will be the same as the name.
+        nameType:
+          type: string
+          enum:
+            - straight
+            - colonSeparated
+          default: 'straight'
+          description: |-
+            The nameType defines how the name is to be interpreted.
+            If the nameType is 'straight', then the 'name' will be used directly as the ContextField name in the
+            index document. The value of the 'name' field in the record will be the value of the index document field.
+            If the nameType is 'colonSeparated', then the value of the 'name' record field will be two colon separated strings;
+            for example "site:Texas". In this case the characters before the first colon are the ContextField name
+            in the index document; for example 'site'. Everything after the first colon will be the value; for example 'Texas'.
+            In the 'colonSeparated' situation, the recordName is ignored.
+        recordName:
+          type: string
+          example: 'contextFieldA-recordName'
+          description: |-
+            The name of the field in the input record that will provide the index document's ContextField value.
+            Defaults to the name of the field in the index document. Should default to 'name'.
+        description:
+          description: A description of the field(s) that will be added to the index document.
+          example: 'contextFieldA description'
+          type: string
+    ContextFieldSpec:
+      type: object
+      description: A field in the index document that gives navigation context to the indexed documents.
+      required: [name,documentName]
+      properties:
+        name:
+          type: string
+          example: 'contextFieldA-name'
+          description: |-
+            The name of the ContextField in the index document.
+        displayName:
+          type: string
+          example: 'Context Field A'
+          description: |-
+            An alias for the name of the ContextField that may be more friendly for interactive display.
+        documentName:
+          type: string
+          example: 'c_contextFieldA-name'
+          description: |-
+            The name of the field in the index document.
+        description:
+          description: A description of the field(s) in the index document.
+          example: 'contextFieldA description'
+          type: string
+    ValueFieldType:
+      type: string
+      default: float
+      enum:
+        - integer
+        - float
+    ValueField:
+      type: object
+      nullable: false
+      description: A field in the input record that provides the KPI values stored on the document.
+      required: [name]
+      properties:
+        name:
+          type: string
+          nullable: false
+          example: 'valueFieldX-name'
+          description: The name of the ValueField in the index document.
+        displayName:
+          type: string
+          example: 'Value Field X'
+          description: |-
+            Defaults to the 'name' field.
+            An alias for the name of the ValueField that may be more friendly for interactive display.
+        unit:
+          type: string
+          example: "errors/minute"
+          description: |-
+            A specification of the value's unit of measurement.
+            Defaults to the text representation of the 'type' enum.
+        type:
+          $ref: '#/components/schemas/ValueFieldType'
+        recordName:
+          type: string
+          example: 'valueFieldX-recordName'
+          description: |-
+            The name of the field in the input record that will provide the index document's field value.
+            Defaults to the name of the field in the index document. Should default to 'name'.
+        description:
+          description: A description of the field that will be added to the index document.
+          example: 'valueFieldX Description'
+          type: string
+    ValueFieldSpec:
+      type: object
+      description: A field in the index document that provides the KPI values stored on the document.
+      required: [name,type,documentName]
+      properties:
+        name:
+          type: string
+          example: 'valueFieldX-name'
+          description: The name of the ValueField in the index document.
+        displayName:
+          type: string
+          example: 'Value Field A'
+          description: |-
+            An alias for the name of the ValueField that may be more friendly for interactive display.
+        unit:
+          type: string
+          example: "errors/minute"
+          description: |-
+            A specification of the value's unit of measurement.
+        type:
+          $ref: '#/components/schemas/ValueFieldType'
+        description:
+          description: A description of the field that will be added to the index document.
+          example: 'valueFieldX Description'
+          type: string
+    InfoFieldType:
+      type: string
+      default: string
+      enum:
+        - time
+        - string
+    InfoField:
+      type: object
+      nullable: false
+      description: |-
+        A field in the input record that provides non-context fields for the document.
+      required: [name]
+      properties:
+        name:
+          type: string
+          nullable: false
+          example: 'infoFieldZ-name'
+          description: The name of the InfoField in the index document.
+        displayName:
+          type: string
+          example: 'Info Field Z'
+          description: |-
+            Defaults to the 'name' field.
+            An alias for the name of the InfoField that may be more friendly for interactive display.
+        type:
+          $ref: '#/components/schemas/InfoFieldType'
+        recordName:
+          type: string
+          example: 'infoFieldZ-recordName'
+          description: |-
+            The name of the field in the input record that will provide the index document's InfoField value.
+            Defaults to the name of the field in the index document. Should default to 'name'.
+        description:
+          description: A description of the field that will be added to the index document.
+          example: 'infoFieldZ Description'
+          type: string
+    InfoFieldSpec:
+      type: object
+      description: |-
+        A field in the index document that provides a information about the document.
+      required: [name, type, documentName]
+      properties:
+        name:
+          type: string
+          example: 'infoFieldZ-name'
+          description: The name of the InfoField in the index document.
+        displayName:
+          type: string
+          example: 'info Field Z'
+          description: |-
+            An alias for the name of the InfoField that may be more friendly for interactive display.
+        type:
+          $ref: '#/components/schemas/InfoFieldType'
+        documentName:
+          type: string
+          example: 'is_infoFieldZ-name'
+          description: |-
+            The name of the field in the index document that will provide the InfoField value.
+        description:
+          description: A description of the field that will be added to the index document.
+          example: 'infoFieldZ Description'
+          type: string
+    FieldSpec:
+      type: object
+      description: |-
+        The Field(s) in the index document, and the FullContext(s) the documents can be associated with.
+        Each document in the index represents a specific KPI value in a specific Context.
+        The FieldSpec is meant as a snapshopt of the current contexts and fields in the system,
+        which can change (infrequently) over time; a sort of index document schema.
+        Note that the ValueContextSpec is used to determine the index document field under which a specific ValueField in a
+        specific FullContext is stored.
+      required: [searchEngineIndexname, value]
+      properties:
+        context:
+          type: array
+          description: These are the fields that give navigation context to the indexed documents.
+          items:
+            $ref: '#/components/schemas/ContextFieldSpec'
+        value:
+          type: array
+          minItems: 1
+          description: |-
+            The fields that provide the KPI values stored on the document.
+          items:
+            $ref: '#/components/schemas/ValueFieldSpec'
+        info:
+          type: array
+          description: |-
+            These are the fields that provide non-context fields for the document.
+            They can be used for ranking/filtering results.
+          items:
+            $ref: '#/components/schemas/InfoFieldSpec'
+        fullContext:
+            $ref: '#/components/schemas/FullContextSpec'
+    FullContext:
+      type: object
+      description: |-
+        A Full Context is a field in the index document that provides all the contexts that pertain to
+        that document in alphabetical order, separated by the separator character.
+      required: [name, context]
+      properties:
+        name:
+          type: string
+          example: 'contextFieldA-name_contextFieldB-name'
+          description: The name of the Full Context
+        context:
+          type: array
+          description: The component Context(s) of the Full Context
+          items:
+            $ref: '#/components/schemas/ContextFieldSpec'
+    FullContextSpec:
+      type: object
+      description: |-
+        A Full Context is a field in the index document that provides all the contexts that pertain to
+        that document in alphabetical order, separated by the separator character.
+      required: [documentName,fullContext]
+      properties:
+        documentName:
+          type: string
+          default: 'full_context'
+          description: |-
+            The name of the field in the Search Engine document that will provide the FullContext name.
+        fullContext:
+          type: array
+          example: [ "name": "contextFieldA-name_contextFieldB-name",
+            {
+              "name": "contextFieldA-name",
+              "displayName": "Context Field A",
+              "documentName": "c_contextFieldA-name",
+              "description": "contextFieldA description"
+            },
+            {
+              "name": "contextFieldB-name",
+              "displayName": "Context Field B",
+              "documentName": "c_contextFieldB-name",
+              "description": "contextFieldB description"
+            } ]
+          description:
+          items:
+            $ref: '#/components/schemas/FullContext'
+    ValueDocumentSpec:
+      type: object
+      description: |-
+        A description of how a ValueField for a specific FullContext is stored in an index document.
+      required: [name,valueContextDocumentName,valueDocumentName]
+      properties:
+        name:
+          type: string
+          example: 'valueFieldX-name'
+          description: The name of the ValueField in the index document.
+        displayName:
+          type: string
+          example: 'Value Field X'
+          description: |-
+            An alias for the name of the ValueField that may be more friendly for interactive display.
+        unit:
+          type: string
+          example: "errors/minute"
+          description: |-
+            A specification of the value's unit of measurement.
+        type:
+          $ref: '#/components/schemas/ValueFieldType'
+        valueContextDocumentName:
+          type: string
+          default: 'value_context'
+          description: |-
+            The name of the field in the Search Engine document that will contain the value context.
+        valueDocumentName:
+          type: string
+          example: 'vd_ContextFieldA-name_ContextFieldB-name_valueFieldX-name'
+          description: |-
+            The name of the field in the Search Engine document that will provide the full context value.
+        description:
+          description: A description of the field that will be added to the index document.
+          example: 'valueFieldX Description'
+          type: string
+    ValueContextSpec:
+      type: object
+      description: |-
+        A description of how a ValueField for a specific FullContext is stored in an index document.
+      required: [value]
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueDocumentSpec'
+    Problem:
+      description: Provides additional information in an error response, RFC 7807.
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string

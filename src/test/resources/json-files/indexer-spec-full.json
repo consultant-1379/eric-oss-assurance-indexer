@@ -1,0 +1,100 @@
+{
+  "name" : "nameOfIndexerA",
+  "description" : "description for indexer A",
+  "source" : {
+    "name" : "sourcename",
+    "type" : "pmstatsexporter"
+  },
+  "target" : {
+    "name" : "search-index-from-indexer-spec-full",
+    "displayName" : "SearchIndexA_DisplayName",
+    "indexDescription" : "SearchIndexA_Description"
+  },
+  "writers" : [
+    {
+      "name" : "writerA_name",
+      "inputSchema" : "writerA_schemaRegistryName",
+      "context" : [
+        {
+          "name" : "contextFieldA_name",
+          "displayName" : "Context Field A",
+          "nameType" : "straight",
+          "recordName" : "contextFieldA_recordName",
+          "description" : "contextFieldA Description"
+        },
+        {
+          "name" : "contextFieldB_name",
+          "displayName" : "Context Field B",
+          "nameType" : "colonSeparated",
+          "recordName" : "contextFieldB_recordName",
+          "description" : "contextFieldB Description"
+        }
+      ],
+      "value" : [
+        {
+          "name" : "valueFieldA_name",
+          "displayName" : "Value Field A",
+          "unit" : "errors/minute",
+          "type" : "float",
+          "recordName" : "valueFieldA_recordName",
+          "description" : "valueFieldA Description"
+        },
+        {
+          "name" : "valueFieldB_name",
+          "displayName" : "Value Field B",
+          "unit" : "errors/minute",
+          "type" : "integer",
+          "recordName" : "valueFieldB_recordName",
+          "description" : "valueFieldB Description"
+        }
+      ],
+      "info" : [
+        {
+          "name" : "infoFieldA_name",
+          "displayName" : "Info Field A",
+          "type" : "string",
+          "recordName" : "infoFieldA_recordName",
+          "description" : "infoFieldA Description"
+        }, {
+          "name" : "infoFieldB_name",
+          "displayName" : "Info Field B",
+          "type" : "time",
+          "recordName" : "infoFieldB_recordName",
+          "description" : "infoFieldB Description"
+        }
+      ]
+    },
+    {
+      "name" : "writerB_name",
+      "inputSchema" : "writerB_schemaRegistryName",
+      "context" : [
+        {
+          "name" : "contextFieldC_name",
+          "displayName" : "Context Field C",
+          "nameType" : "straight",
+          "recordName" : "contextFieldC_recordName",
+          "description" : "contextFieldC Description"
+        }
+      ],
+      "value" : [
+        {
+          "name" : "valueFieldC_name",
+          "displayName" : "Value Field C",
+          "unit" : "errors/minute",
+          "type" : "integer",
+          "recordName" : "valueFieldC_recordName",
+          "description" : "valueFieldC Description"
+        }
+      ],
+      "info" : [
+        {
+          "name" : "infoFieldC_name",
+          "displayName" : "Info Field C",
+          "type" : "string",
+          "recordName" : "infoFieldC_recordName",
+          "description" : "infoFieldC Description"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+modelVersion: 2.0
+
+description:  "Release verification rules"
+
+import:
+  settings: ../../settings.yaml
+
+docker-images:
+  - adp-release-auto: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-adp-release-auto:latest
+  - k8-test: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-py3kubehelmbuilder:latest
+  - yq: armdocker.rnd.ericsson.se/proj-adp-sec-dev/yq:latest
+
+properties:
+  - helm-chart-name: eric-oss-assurance-indexer
+  - artifactory-base-url: "https://arm.seli.gic.ericsson.se/artifactory/"
+  - docker-flags-default: "--net=host
+                           --env HOME=${env.HOME}
+                           --env KUBECONFIG=/tmp/admin.conf
+                           --volume ${env.KUBECONFIG}:/tmp/admin.conf
+                           --env HELM_HOME=${env.PWD}/.bob/.helm
+                           --env ENABLE_HELM_V3=true
+                           ${var.volume}"
+  - artifactory: https://arm.seli.gic.ericsson.se/artifactory
+  - helm-chart-repo-drop: proj-bos-assurance-drop-helm
+  - helm-released-repo: proj-bos-assurance-released-helm
+  - helm3-path: /usr/share/helm/3.x/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  - image-secret: armdocker
+
+env:
+  - PWD
+  - USER (default=local)
+  - CHART_VERSION
+  - ARM_TOKEN
+  - DOCKER_REGISTRY (default=armdocker.rnd.ericsson.se)
+  - KUBECONFIG (default=${env.HOME}/.kube/config)
+  - NAMESPACE (default=${env.NAMESPACE})
+  - HOME
+  - ARM_USER (default=${env.USER})
+  - ARM_TOKEN
+
+var:
+  - docker-repo-in-use
+  - va-report-docker-image-version
+  - volume
+  - helm-chart-version
+  - helm-repo-in-use
+  - version
+
+
+rules:
+  identify-versions-to-test:
+    - task: volume
+      cmd:
+        - echo "--volume $PWD:$PWD  --volume $HOME:$HOME" > .bob/var.volume
+    - task: search-latest-available-helm-chart-version
+      docker-image: adp-release-auto
+      docker-flags:
+        - ${docker-flags-default}
+      cmd:
+        - sh -c '
+          if [ -z ${env.CHART_VERSION} ]; then
+          echo "env.CHART_VERSION is not present. So, Need to search for latest available version from drop repository";
+          echo "Using helm repo search to determine version to use for test";
+          mkdir -p ${env.PWD}/.bob/.helm &&
+          helm repo add  --username ${env.ARM_USER} --password ${env.ARM_TOKEN} arm-${settings.tpg-name}-drop
+          ${artifactory-base-url}/${settings.helm-project-drop}/ &&
+          helm repo update ;
+          helm search repo ${settings.helm-chart-name} --devel --output yaml > .bob/var.helm-chart-version-in-yaml;
+          fi'
+    - task: set-helm-chart-version
+      docker-image: yq
+      docker-flags:
+        - ${docker-flags-default}
+      cmd:
+        - sh -c '
+          if [ -z ${env.CHART_VERSION} ]; then
+          echo "env.CHART_VERSION is not present. So, applying yq query on the helm-chart-version-in-yaml file to fetch the version.";
+          yq r .bob/var.helm-chart-version-in-yaml .version > .bob/var.helm-chart-version;
+          else
+          echo "env.CHART_VERSION is present.";
+          echo "${env.CHART_VERSION}" > .bob/var.helm-chart-version;
+          fi'
+    - task: Determine-repos-to-use-for-test
+      docker-image: adp-release-auto
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PWD=${env.PWD}
+      cmd:
+        - bash -c '
+          echo "+ version uses released repo while - version uses drop";
+          if [[ ${var.helm-chart-version} =~ "+" ]]; then
+          echo "${helm-released-repo}" > .bob/var.helm-repo-in-use;
+          echo "${settings.docker-project-release}" > .bob/var.docker-repo-in-use;
+          else
+          echo "${helm-chart-repo-drop}" > .bob/var.helm-repo-in-use;
+          echo "${settings.docker-project-drop}" > .bob/var.docker-repo-in-use;
+          fi;'
+        - echo "Helm version to use for test ${var.helm-chart-version}"
+        - sed 's/+/-/' .bob/var.helm-chart-version > .bob/var.va-report-docker-image-version;
+
+  # For deployment of AIS
+  helm-install-ais:
+    - rule: create-secrets
+    - rule: helm-dependency-build
+    - rule: helm-install-dependent-services
+    - rule: installation-test
+    - task: install-ais
+      docker-image: k8-test
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PATH=${helm3-path}
+      cmd:
+        - helm install --namespace ${env.NAMESPACE} ${helm-chart-name} ${artifactory}/${var.helm-repo-in-use}/${helm-chart-name}/${helm-chart-name}-${var.helm-chart-version}.tgz --set log.streamingMethod=indirect --set eric-log-shipper.logshipper.autodiscover.namespace=${env.NAMESPACE} --set imageCredentials.pullSecret=${image-secret} --timeout=10m --wait --set global.security.tls.enabled=false --set eric-data-search-engine.metrics.enabled=false --debug
+    - rule: installation-test
+
+  helm-dependency-build:
+    - task: helm-build
+      docker-image: k8-test
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PATH=${helm3-path}
+      cmd:
+        - helm dep build ci-cd/services/prerequisites-bundle-ci
+
+  # For deployment of Dependent services
+  helm-install-dependent-services:
+    - task: install
+      docker-image: k8-test
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PATH=${helm3-path}
+      cmd:
+        - helm install --namespace ${env.NAMESPACE} prerequisites-bundle ci-cd/services/prerequisites-bundle-ci --set global.security.tls.enabled=false --timeout=10m --wait --debug
+
+  helm-delete-ais:
+    - task: clean
+      docker-image: k8-test
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PATH=${helm3-path}
+        - --env NAMESPACE=${env.NAMESPACE}
+      cmd:
+        - helm delete ${helm-chart-name} --namespace ${env.NAMESPACE} || true
+
+  installation-test:
+    - task: verifying-pods
+      docker-image: k8-test
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PATH=${helm3-path}
+        - --env NAMESPACE=${env.NAMESPACE}
+      cmd:
+#        - kubectl describe pods --namespace ${env.NAMESPACE}
+        - kubectl get pods --namespace ${env.NAMESPACE}
+
+  create-secrets:
+    - task: secret-creation
+      docker-image: k8-test
+      docker-flags:
+        - ${docker-flags-default}
+        - --env PATH=${helm3-path}
+        - --env NAMESPACE=${env.NAMESPACE}
+      cmd:
+        - kubectl create secret docker-registry armdocker-login-secret --docker-server=armdocker.rnd.ericsson.se --docker-username=cenxdeploy --docker-password="sjag45kNGH2gjaKHJ3344jUAI123" --docker-email=cenxdeploy@ericsson.com --namespace ${env.NAMESPACE}
+        - kubectl create secret generic ${image-secret} --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson --namespace ${env.NAMESPACE} || true
+

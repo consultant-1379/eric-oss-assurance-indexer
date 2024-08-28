@@ -1,0 +1,876 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: 2.0
+
+description: eric-oss-assurance-indexer Microservice
+
+
+import:
+  images: ci-cd/bob-rulesets/docker-images.yaml
+
+  project: project-properties.yaml
+  common: ci-cd/bob-rulesets/common-rules.yaml
+  maven: ci-cd/bob-rulesets/maven-rules.yaml
+  helm: ci-cd/bob-rulesets/helm-rules.yaml
+  docker: ci-cd/bob-rulesets/docker-rules.yaml
+  k8s: ci-cd/bob-rulesets/k8s-rules.yaml
+  maven-fossa: ci-cd/bob-rulesets/maven-fossa-rules.yaml
+  munin: ci-cd/bob-rulesets/munin-rules.yaml
+  dependencies: ci-cd/bob-rulesets/dependencies-rules.yaml
+  va: ci-cd/bob-rulesets/va-rules.yaml
+  pri: ci-cd/bob-rulesets/pri-rules.yaml
+  batteries: batteries/batteries.yaml
+  batteries-build: batteries/modules/build.yaml
+  batteries-service-lint: batteries/modules/service-lint.yaml
+  batteries-service-malware: batteries/modules/service-malware.yaml
+  batteries-service-malware-eppki-mss: batteries/modules/service-malware-eppki-mss.yaml
+  batteries-service-va-report: batteries/modules/service-va-report.yaml
+  toolbox-va-report: batteries/modules/integration-hf-va-report.yaml
+  quality: batteries/modules/service-quality-test.yaml
+  settings: settings.yaml
+  toolbox: batteries/modules/toolbox.yaml
+  service-deployment: ci-cd/bob-rulesets/service-deployment-rules.yaml
+
+docker-images:
+  - battery-toolbox: ${settings.battery-toolbox-image}
+
+
+properties:
+  - api-deployment-name: ${env.HELM_RELEASE}
+  - helm-chart: "${var.chart-output-directory}/${var.chart-name}-${var.chart-version}.tgz"
+  - k8s-pullsecret-name: arm-pullsecret
+  - namespace: ${env.NAMESPACE}
+  - project-maven-args: ""
+  - project-maven-version-opts: "-Dversion=${var.version}"
+  - project-maven-opts:
+      -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      -Dmaven.wagon.http.retryHandler.count=9
+      -DretryFailedDeploymentCount=10
+      ${project-maven-version-opts}
+  - only-applicable-in-automation: "ONLY_APPLICABLE_IN_AUTOMATION"
+  - arm-doc-dev: https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-docs-dev-generic-local/marketplace/eric-oss-assurance-indexer
+  - arm-doc-released: https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-docs-released-generic-local/marketplace/eric-oss-assurance-indexer
+
+
+env:
+  - CHART_VERSION
+  - CUSTOM_DATA (default="")
+  - HOME
+  - REPORT_DIR (default=.bob/reports)
+  - NAMESPACE (default=${settings.helm-chart-name}-${var.commithash})
+  - FOSSA_BRANCH (default=master)
+  - GERRIT_USERNAME (default=)
+  - GERRIT_PASSWORD (default=)
+  - MIMER_REFRESHTOKEN (default=${env.MIMER_REFRESHTOKEN})
+  - MIMER_SANDBOX_REFRESHTOKEN (default=${env.MIMER_SANDBOX_REFRESHTOKEN})
+  - MUNIN_SERVER (default=)
+  - UPDATE_ADP_CHASSIS_LIBRARY_VERSION (default=)
+  - USER(default=jenkins)
+  - BUILD_URL (default=${only-applicable-in-automation})
+  - MARKETPLACE_AIS_TOKEN
+  - IMAGE_TAG
+
+  # Kubernetes
+  - HELM_INSTALL_TIMEOUT (default=5m0s)
+  - HELM_RELEASE (default=${settings.helm-chart-name}-release)
+
+
+var:
+  - chart-name
+  - chart-output-directory
+  - chart-version
+  - helm-chart
+  - adp-chassis-spring-boot-bom-version
+  - image-version-product-number-suffix
+  - update-adp-chassis-product-version
+  - va-report-helm-chart-version
+  - va-report-helm-repo-in-use
+  - version
+  - image-version
+  - commithash
+
+
+rules:
+  ##############################
+  #
+  # Toolbox
+  #
+  ##############################
+  conditions:
+    - task: only-in-automation
+      cmd: test "${env.BUILD_URL}" != "${only-applicable-in-automation}"
+
+  validate-toolbox-conventions:
+    - rule: toolbox.validate-toolbox-conventions
+
+  generate-toolbox-documentation:
+    - rule: toolbox.generate-toolbox-documentation
+
+  build:
+    - rule: init
+    - rule: validate-toolbox-conventions
+      condition: conditions:only-in-automation
+    - rule: generate-toolbox-documentation
+      condition: conditions:only-in-automation
+    - rule: maven-update-version
+    - rule: maven-build
+    - rule: debug-workspace
+    - rule: docker.image-build
+    - rule: docker.image-tag
+    - rule: chart-build
+    # Needed to be pushed for va-test
+    - rule: image-push
+    - rule: helm-push
+#    - rule: batteries-build.generate-deliverables
+#    - rule: batteries-build.archive-deliverables
+
+
+  debug-workspace:
+    - task: find-jar
+      cmd: find . -name *.jar
+
+
+  lint-test:
+    - rule: maven-lint
+    - rule: chart-lint
+    - rule: batteries-service-lint.init
+    - rule: batteries-service-lint.helm-lint-scan-based-on-tar-gz
+      properties:
+        - path-to-helmchart-tar-gz: "build/helm/${settings.helm-chart-name}-${var.version}.tgz"
+
+
+    - rule: batteries-service-lint.adp-design-rule-check-based-on-tar-gz
+      properties:
+        - path-to-helmchart-tar-gz: "build/helm/${settings.helm-chart-name}-${var.version}.tgz"
+    - rule: batteries-service-lint.image-design-rule-check
+      properties:
+        - path-to-helmchart-tar-gz: "build/helm/${settings.helm-chart-name}-${var.version}.tgz"
+    - rule: batteries-service-lint.dive-lint
+      properties:
+        - path-to-helmchart-tar-gz: "build/helm/${settings.helm-chart-name}-${var.version}.tgz"
+    - rule: batteries-service-lint.cbos-age-tool-run-based-on-tar-gz
+      properties:
+        - path-to-helmchart-tar-gz: "build/helm/${settings.helm-chart-name}-${var.version}.tgz"
+      condition: batteries-service-lint.conditions:run-cbos-age-tool
+
+    - rule: batteries-service-lint.pre-teardown
+    - rule: batteries-service-lint.evaluate-design-rule-check-resultcodes
+
+
+  unit-test:
+    - rule: maven-test
+
+
+  quality-test:
+#    - rule: image-dr
+#    - rule: chart-dr
+    - rule: long-wait
+    - rule: quality.run-quality-test
+
+
+  3pp-analysis-test:
+    - rule: maven-fossa-scan
+    - rule: dependencies-build
+    - rule: dependencies-validate
+#    - rule: dependencies-plms
+#    - rule: dependencies-validate
+#    - rule: dependencies-upload
+
+
+  push:
+    - rule: maven-push
+    - rule: image-push
+    - rule: helm-push
+
+
+    - rule: marketplace-upload-dev
+    - rule: docker.create-artifact-properties
+
+
+  long-wait:
+    - task: wait
+      cmd: bash -c 'sleep 120'
+
+  #
+  # PROJECT RULES
+  #
+  clean:
+    - rule: maven-clean
+    - rule: common.clean
+
+
+  init:
+    - rule: common.init
+    - rule: docker.init
+      properties:
+        - image-name: ${project.image-name}
+        - image-context: ${project.image-context}
+    - rule: helm.init
+      properties:
+        - chart-name: ${project.helm-chart-name}
+        - chart-app-version: "${common.version}"
+        - chart-version: ${var.common.version}
+        - chart-output-directory: ${common.ci-build-directory}/helm
+
+
+  #
+  # Project Maven Rules
+  #
+  maven-update-version:
+    - rule: maven.mvn
+      properties:
+        - maven-args: versions:set -DnewVersion=${common.version-prefix}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
+        - maven-extra-args: ${project-maven-args}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  maven-clean:
+    - rule: maven.mvn
+      properties:
+        - maven-args: clean
+        - maven-extra-args: ${project-maven-args}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  maven-build:
+    - rule: maven.mvn
+      properties:
+        - maven-args: package install:install -DskipTests
+        - maven-extra-args: ${project-maven-args}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  maven-test:
+    - rule: maven.mvn
+      properties:
+        - maven-args:
+            org.jacoco:jacoco-maven-plugin:prepare-agent
+            surefire:test
+            org.jacoco:jacoco-maven-plugin:report
+#            org.jacoco:jacoco-maven-plugin:check
+        - maven-extra-args: ${project-maven-args} --fail-at-end
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  maven-lint:
+    - rule: maven.mvn
+      properties:
+        - maven-args:
+            enforcer:enforce
+            dependency:analyze-only
+            pmd:check
+            com.github.spotbugs:spotbugs-maven-plugin:check
+#            checkstyle:check
+#            com.mycila:license-maven-plugin:check
+        - maven-extra-args: ${project-maven-args} --fail-at-end
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  maven-push:
+    - rule: maven.mvn
+      properties:
+        - maven-args: deploy
+        - maven-extra-args: ${project-maven-args} -P ci-deploy -DaltDeploymentRepository=${project.maven-repository-id}::${project.maven-repository-snapshot-url}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  maven-fossa-scan:
+    - rule: maven-fossa.analyze
+      properties:
+        - maven-extra-opts: ${project-maven-opts}
+        - fossa-extra-args: --branch ${env.FOSSA_BRANCH}
+    - rule: maven-fossa.fetch-report
+      properties:
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  #
+  # Project Container Image Rules
+  #
+  image-build:
+    - rule: docker.image-build
+      properties:
+        - image-registry: armdocker.rnd.ericsson.se
+        - image-title: ${project.image-title}
+        - image-target: spring-boot-release
+        - image-product-number: ${project.image-product-number}
+        - image-extra-build-flags:
+            --build-arg BASE_OS_VERSION=${project.image-base-os-version}
+            --build-arg CONTAINER_NAME=${project.image-name}
+            --build-arg JAR_FILE=${project.spring-application-name}-${common.version-prefix}-SNAPSHOT.jar
+
+
+  image-dr:
+    - rule: docker.check-dr-rules
+      properties:
+        - image-design-rules-skip: "-DimageDesignRule.config.DR-D470203-060=skip
+                                    -DimageDesignRule.config.DR-D470203-041=skip
+                                    -DimageDesignRule.config.DR-D470203-050=skip
+                                    -DimageDesignRule.config.DR-D1125-050=skip
+                                    -DimageDesignRule.config.DR-D1125-052=skip
+                                    -DimageDesignRule.config.DR-D1125-054=skip"
+
+
+  image-push:
+    - rule: docker.image-tag
+      properties:
+        - image-registry: ${project.image-registry-url}
+    - rule: docker.image-push
+      properties:
+        - image-registry: ${project.image-registry-url}
+
+
+  delete-images:
+    - task: delete-docker-image
+      cmd: docker image remove ${docker.image-name-full}:${docker.image-tag} $(docker images -f "dangling=true" -q) || true
+
+
+  #
+  # Project Helm Chart Rules
+  #
+  chart-build:
+    - rule: helm.package
+      properties:
+        - helm-extra-flags:
+            --replace eric-product-info.yaml:DOCKER_PROJECT=${docker.image-registry-project}
+            --replace eric-product-info.yaml:IMAGE_VERSION=${docker.image-tag}
+
+
+  chart-lint:
+    - rule : helm.lint
+      properties :
+        - chart-name : ${project.helm-chart-name}
+
+
+  chart-dr:
+    - rule: helm.design-rule
+      properties:
+  #      properties:
+  #       - helm-design-rules-skip:
+  #         -DhelmDesignRule.config.drHc101=skip
+
+
+  helm-push:
+    - rule: helm.push
+      properties:
+        - helm-extra-flags: --overwrite-existing-version
+
+
+  helm-install-prep:
+    - rule: k8s.cmd
+      properties:
+        - k8s-cmd: |
+            /bin/bash -c '
+              kubectl create namespace ${namespace} --dry-run=client --output=yaml | kubectl apply -f -'
+    - rule: k8s.cmd
+      properties:
+        - k8s-cmd: |
+            /bin/bash -c '
+              kubectl create secret docker-registry ${k8s-pullsecret-name} \
+                  --docker-server=${project.image-registry-url} \
+                  --docker-username=${env.common.ARM_USER} \
+                  --docker-password=${env.common.ARM_TOKEN} \
+                  --namespace=${namespace} \
+                  --dry-run=client --output=yaml | kubectl apply -f -'
+
+
+  helm-install-minimum:
+    - rule: helm-install-prep
+    - task: setup-helm-chart-var
+      cmd: echo "${helm-chart}" > .bob/var.helm-chart
+    - rule: k8s.cmd
+      properties:
+        - k8s-cmd: |
+            helm install ${api-deployment-name} ${var.helm-chart} \
+              --namespace ${namespace} \
+              --wait \
+              --timeout ${env.HELM_INSTALL_TIMEOUT} \
+              --set global.pullSecret=${k8s-pullsecret-name} \
+              -f helm/eric-oss-assurance-indexer/profiles/minimum.yaml
+
+
+  #
+  # Project Dependencies Rules
+  #
+  dependencies-build:
+    - rule: dependencies.update-fossa
+      properties:
+        - dependencies-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+        - fossa-report: ${maven-fossa.fossa-report}
+    - rule: dependencies.enrich
+      properties:
+        - dependency-primary-input-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+        - dependency-secondary-input-file: ${project.dependencies-files-folder}/dependencies-metadata.yaml
+        - dependency-output-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+    - rule: dependencies.update-bazaar
+      properties:
+        # Un-comment line below for testing changes to bazaar_name_map.csv before sending to adp-release-auto.
+        # See: https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/adp-cicd/bob-adp-release-auto/+/master/foss/#Scan-Bazaar-for-3PPs
+        #- dependencies-docker-flags: "--volume ${env.PWD}/${project.dependencies-files-folder}/bazaar_name_map.csv:/usr/share/foss/resources/bazaar_name_map.csv"
+        - dependencies-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+        - fossa-report: ${maven-fossa.fossa-report}
+    - rule: dependencies.enrich
+      properties:
+        - dependency-primary-input-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+        - dependency-secondary-input-file: ${project.dependencies-files-folder}/dependencies-metadata.yaml
+        - dependency-output-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+
+
+  dependencies-plms:
+    - rule: munin.search-foss
+      properties:
+        - dependencies-file-path: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+        - output-search-foss-folder: ${common.ci-artifacts-directory}
+
+
+  dependencies-validate:
+    - rule: dependencies.validate
+      properties:
+        - dependency-primary-input-file: ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+        - allow-esw4-3pp: "true"
+    - task: check-new-versions
+      description: "Fails pipeline if there is a new_versions.json produced by munin search-foss script"
+      cmd: '[ -f ${common.ci-artifacts-directory}/new_versions.json ] && exit 1 || exit 0'
+    - task: check-new-components
+      description: "Fails pipeline if there is a new_components.json produced by munin search-foss script"
+      cmd: '[ -f ${common.ci-artifacts-directory}/new_components.json ] && exit 1 || exit 0'
+
+
+  dependencies-compare:
+    - task: compare-dependencies-3pp-files
+      description: Check if both files are equal
+      docker-image: images.adp-release-auto
+      cmd: compare_two_yaml_files ${project.dependencies-files-folder}/dependencies-3pp.yaml ${common.ci-artifacts-directory}/dependencies-3pp.yaml
+
+
+  dependencies-create-gerrit-patch:
+    - task: move-dependencies-files
+      cmd:
+        - cp -f ${common.ci-artifacts-directory}/dependencies-3pp.yaml ${project.dependencies-files-folder}/dependencies-3pp.yaml;
+    - task: create-new-dependencies-patch
+      docker-image: images.adp-release-auto
+      docker-flags:
+        - "--env GERRIT_USERNAME"
+        - "--env GERRIT_PASSWORD"
+      cmd:
+        - gerrit create-patch
+          --file ${project.dependencies-files-folder}/dependencies-3pp.yaml
+          --message "[NO-JIRA] Update 3pp dependencies file"
+          --topic "skip-ci"
+          --debug
+
+
+  dependencies-upload:
+    - rule: dependencies-create-gerrit-patch
+      condition: NOT (dependencies-compare)
+
+
+  #
+  # Project Vulnerability Rules
+  #
+  va-init:
+    - rule: va.va-init
+      properties:
+        - product-node-name: ${project.product-node-name}
+        - product-name: ${project.ericsson-product-name}
+        - product-contact: ${project.product-contact}
+
+
+  va-test:
+    - rule: va-init
+    - rule: va.va-tools-scan
+#    - rule: ciscat-scan
+#    - rule: helm-install-minimum
+#    - rule: nmap
+
+
+  va-fetch-xray-report:
+    - rule: va.xray-fetch-report
+
+
+  va-report-execution:
+    - rule: va.va-report
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Verify start security Stage
+  # --------------------------------------------------------------------------------------------------------------------
+
+  # This is a temporary rule only. The idea is that the battery team will develop a new battery-toolbox module service-umbrella that should be used here
+  # but to enable us to use the verify-xxx jobs via spinnaker this should get us started.
+  verify-start-security:
+    - task: customise-artifact-properties
+      cmd:
+        - echo "CHART_VERSION=${env.CHART_VERSION}" > artifact.properties
+        - echo "CUSTOM_DATA=${env.CUSTOM_DATA}" >> artifact.properties
+        - echo "RUN_PRE_RELEASE=false" >> artifact.properties
+
+
+  # This is a temporary rule only. The idea is that the battery team will develop a new battery-toolbox module service-umbrella that should be used here
+  # but to enable us to use the verify-xxx jobs via spinnaker this should get us started.
+  verify-start-security-latest:
+    - task: customise-artifact-properties
+      cmd:
+        - echo "CHART_VERSION=${env.CHART_VERSION}" > artifact.properties
+        - echo "CUSTOM_DATA=${env.CUSTOM_DATA}" >> artifact.properties
+        - echo "RUN_PRE_RELEASE=false" >> artifact.properties
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Verify Malware Stage
+  # --------------------------------------------------------------------------------------------------------------------
+  verify-malware:
+    - rule: batteries-service-malware.verify-malware
+#    - rule: batteries-service-malware-eppki-mss.verify-malware-eppki-mss
+#      properties:
+#        - wait-for-scan: "False"
+#    - rule: batteries-service-malware-eppki-mss.get-malware-eppki-mss
+
+
+  verify-malware-pre-teardown:
+    - rule: batteries-service-malware.verify-malware-pre-teardown
+#    - rule: batteries-service-malware-eppki-mss.verify-malware-eppki-mss-pre-teardown
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Verify VA Report Stage
+  # --------------------------------------------------------------------------------------------------------------------
+  verify-va-report:
+    # As no helm artifact is being created which automation can detect if it is considered released or not
+    # the manual setting is applied for now which means this bob variable needs to be populated accordingly
+    # based on x.y.z has been released or not in order to have correct datalake upload behaviour.
+    # Below is a temp implementation meaning that datalake upload will always occur (if it is enabled).
+    - task: populate-service-va-report-helm-artifact-semver-released-due-to-manual
+      cmd:
+        - echo "False" > .bob/var.service-va-report-helm-artifact-semver-released
+    - task: prepare-for-custom-service-va-report-ambition-level
+      cmd:
+        - mkdir -p "build/archive-artifacts"
+        - cp "${settings.git-submodule-batteries-name}/template/service-va-report/service-va-report-scope-helmfile-based.json"
+          "build/archive-artifacts/service-va-report-scope-custom.json"
+    - task: update-service-va-report-scope
+      docker-image: battery-toolbox
+      cmd:
+        - jq_helper.sh set_property_a_to_value_b_where_property_c_is_value_d
+          "scope" "execute"
+          "tool" "kubehunter"
+          "build/archive-artifacts/service-va-report-scope-custom.json"
+        - jq_helper.sh set_property_a_to_value_b_where_property_c_is_value_d
+          "scope" "execute"
+          "tool" "kubebench"
+          "build/archive-artifacts/service-va-report-scope-custom.json"
+        - jq_helper.sh set_property_a_to_value_b_where_property_c_is_value_d
+          "scope" "skip"
+          "tool": "hadolint"
+          "build/archive-artifacts/service-va-report-scope-custom.json"
+        - jq_helper.sh set_property_a_to_value_b_where_property_c_is_value_d
+          "scope": "skip"    
+          "tool" "kubesec"
+          "build/archive-artifacts/service-va-report-scope-custom.json"
+    - rule: batteries-service-va-report.verify-va-report
+      properties:
+        - override-service-va-report-scope-control-file: "build/archive-artifacts/service-va-report-scope-custom.json"
+        - override-finalize-va-report: "False"
+        - override-is-microcbo-flag: "True"
+    # below should be removed once/if bscas-505 is resolved
+    - task: workaround-for-kubesec-folder-issue-bscas-505
+      docker-image: images.adp-release-auto
+      docker-flags:
+        - "--env HOME=${env.HOME}"
+      cmd:
+        - sh -c " jq '.[].score' ${env.REPORT_DIR}/${batteries-service-va-report.subpath-va-reports}/${batteries-service-va-report.subpath-kubesec}/${settings.helm-chart-name}/${batteries-service-va-report.subpath-templates}/deployment/*.json | sed 's/^\|$/\"/g' | paste -sd, >
+          .bob/var.va-report-kubesec-result || true"
+        - echo "Kubesec results (YAML) -> Score $(cat .bob/var.va-report-kubesec-result)." >>
+          ${env.REPORT_DIR}/${batteries-service-va-report.subpath-va-reports}/${batteries-service-va-report.va-reports-shortreport}; echo $? > .bob/var.resultcode-va-report-print-kubesec-score
+        - >
+          sh -c '
+            if $(ls -1 ${env.REPORT_DIR}/${batteries-service-va-report.subpath-va-reports}/${batteries-service-va-report.subpath-kubesec}/${settings.helm-chart-name}/${batteries-service-va-report.subpath-templates}/deployment/*.json 2>/dev/null 1>&2 ) ; then
+              echo "--kubesec-reports ${env.REPORT_DIR}/${batteries-service-va-report.subpath-va-reports}/${batteries-service-va-report.subpath-kubesec}/${settings.helm-chart-name}/${batteries-service-va-report.subpath-templates}/deployment/" > .bob/var.va-report-argument-kubesec;
+              printf "Kubesec\n: [ kubesec folder ](kubesec/)\n\n" > .bob/var.va-report-appendix-kubesec;
+            fi;
+          '
+    - rule: batteries-service-va-report.generate-finalize-va-report
+      properties:
+        - override-service-va-report-scope-control-file: "build/archive-artifacts/service-va-report-scope-custom.json"
+
+
+  verify-va-report-pre-teardown:
+    - rule: batteries-service-va-report.verify-va-report-pre-teardown
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Verify running service security
+  # --------------------------------------------------------------------------------------------------------------------
+  verify-running-service-security:
+    - rule: service-deployment.identify-versions-to-test
+    - rule: service-deployment.helm-install-ais
+    - task: initialize-chart-version-variable
+      cmd:
+        - cat .bob/var.helm-chart-version > .bob/var.va-report-eric-oss-assurance-indexer-version
+    - rule: toolbox-va-report._init-build-space
+    - rule: toolbox-va-report._init-report-space
+    - task: setup-default-nmap-result-code
+      cmd:
+        - echo "0" > .bob/var.resultcode-va-report-general-nmap-check
+    - task: set-default-value-to-junit-result-json
+      cmd:
+        - echo "[]" > ${toolbox-va-report.fullpath-to-va-report-junit-result-json}
+    - rule: toolbox-va-report.run-tenable-init
+    - rule: toolbox-va-report.run-tenable-on-service
+      properties:
+        - service-to-test: ${settings.service-eric-oss-assurance-indexer}
+    - rule: toolbox-va-report.run-nmap-on-service
+      properties:
+        - service-to-test: ${settings.service-eric-oss-assurance-indexer}
+        - va-report-nmap-skip-pod-status-check: "^((?!eric-oss-assurance-indexer).)*$"
+    - rule: toolbox-va-report.run-zap-gui-on-service
+      properties:
+        - service-to-test: ${settings.service-eric-oss-assurance-indexer}
+        - zap-gui-config-template: ${settings.va-report-eric-oss-assurance-indexer-zapconfig-gui-template}
+        - va-report-zap-skip-services-status-check: "True"
+    - task: set-scope-to-defensics
+      cmd:
+        - echo "true" > .bob/var.is-scope-defensics
+    - rule: toolbox-va-report.run-defensics-on-service
+      properties:
+        - service-to-test: ${settings.service-eric-oss-assurance-indexer}
+        - va-report-defensics-scan-options: ${settings.va-report-eric-oss-assurance-indexer-defensics-scan-options}
+        - va-report-defensics-scan-testplandir: ${settings.va-report-eric-oss-assurance-indexer-defensics-scan-testplandir}
+        - va-report-defensics-scan-test-suite: ${settings.va-report-eric-oss-assurance-indexer-defensics-scan-test-suite}
+        - va-report-defensics-scan-input-json: ${settings.va-report-eric-oss-assurance-indexer-defensics-scan-input-json-values}
+        - va-report-defensics-scan-properties: ${settings.va-report-eric-oss-assurance-indexer-defensics-scan-properties}
+        - va-report-defensics-scan-report-suffix: "eric-oss-assurance-indexer"
+        - va-report-defensics-skip-services-status-check: "True"
+    - rule: toolbox-va-report.populate-artifact-properties-na
+
+  verify-running-service-security-pre-teardown:
+    - rule: toolbox-va-report.verify-va-report-pre-teardown
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Verify design rules
+  # --------------------------------------------------------------------------------------------------------------------
+  verify-design-rules:
+    # As bss dr checker, (not applicable) the below cannot be used
+    # - rule: batteries-service-lint.verify-design-rules
+    - rule: batteries-service-lint.verify-design-rules-init
+    - rule: batteries-service-lint.verify-design-rules-adp-design-rule-check-based-on-tar-gz
+      properties:
+        - path-to-helmchart-tar-gz: "${batteries-service-lint.subpath-build}/${settings.helm-chart-name}-${var.va-report-helm-chart-version}.tgz"
+    - rule: batteries-service-lint.verify-design-rules-image-design-rule-check
+      properties:
+        - path-to-helmchart-tar-gz: "${batteries-service-lint.subpath-build}/${settings.helm-chart-name}-${var.va-report-helm-chart-version}.tgz"
+    - rule: batteries-service-lint.verify-design-rules-dive-lint
+      properties:
+        - path-to-helmchart-tar-gz: "${batteries-service-lint.subpath-build}/${settings.helm-chart-name}-${var.va-report-helm-chart-version}.tgz"
+    - rule: batteries-service-lint.cbos-age-tool-run-based-on-tar-gz
+      properties:
+        - path-to-helmchart-tar-gz: "${batteries-service-lint.subpath-build}/${settings.helm-chart-name}-${var.va-report-helm-chart-version}.tgz"
+
+
+  verify-design-rules-pre-teardown:
+    - rule: batteries-service-lint.verify-design-rules-pre-teardown
+
+
+  #
+  # Project 2PP Update Rules
+  #
+  upgrade-image:
+    - task: update-cbo-properties
+      docker-image: images.adp-release-auto
+      cmd:
+        - update-ruleset-property -r project-properties.yaml -p image-base-os-version=${env.IMAGE_TAG}
+        - update-ruleset-property -r settings.yaml -p common-base-repo-version=${env.IMAGE_TAG}
+    - task: create-new-cbo-patch
+      docker-image: images.adp-release-auto
+      docker-flags:
+        - "--env GERRIT_USERNAME"
+        - "--env GERRIT_PASSWORD"
+      cmd:
+        - gerrit create-patch
+          --message "[NO-JIRA] Update Common Base OS to ${project.image-base-os-version}"
+          --git-repo-local .
+          --topic "automatic-submit"
+          --debug
+
+
+  update-adp-chassis-version:
+    - task: strip-version
+      description: strip version in case of release candidates or snapshot versions
+      cmd: echo "${env.UPDATE_ADP_CHASSIS_LIBRARY_VERSION}" | grep -Eo '([0-9]+.[0-9]+.[0-9]+)' > .bob/var.update-adp-chassis-product-version
+    - task: update-project-properties
+      description: sets the version on project-properties.yaml to be used in PLMS systems. Must be a valid semver without suffix.
+      docker-image: images.adp-release-auto
+      cmd: update-ruleset-property -r project-properties.yaml -p adp-chassis-library-version=${var.update-adp-chassis-product-version}
+    - rule: maven.mvn
+      properties:
+        - maven-args: versions:set-property
+        - maven-extra-args: ${project-maven-args} -Dproperty='adp-chassis-spring-boot-bom.version'
+            -DnewVersion=${env.UPDATE_ADP_CHASSIS_LIBRARY_VERSION}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  update-adp-chassis-version-create-gerrit-patch:
+    - task: create-new-adp-chassis-patch
+      condition: update-adp-chassis-version-conditions:is-version-sharp
+      docker-image: images.adp-release-auto
+      docker-flags:
+        - "--env GERRIT_USERNAME"
+        - "--env GERRIT_PASSWORD"
+      cmd:
+        - gerrit create-patch
+          --file pom.xml project-properties.yaml
+          --message "[NO-JIRA] Update ADP Chassis Version to ${env.IMAGE_TAG}"
+          --git-repo-local .
+          --wait-label "Verified"="+1"
+          --submit
+          --debug
+
+
+  update-maven-dependencies-version:
+    - rule: maven.mvn
+      properties:
+        - maven-args: versions:update-properties versions:update-parent
+        - maven-extra-args: ${project-maven-args}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  update-maven-dependencies-create-gerrit-patch:
+    - task: update-maven-dependencies-patch
+      docker-image: images.adp-release-auto
+      docker-flags:
+        - "--env GERRIT_USERNAME"
+        - "--env GERRIT_PASSWORD"
+      cmd:
+        - gerrit create-patch
+          --file pom.xml
+          --message "[NO-JIRA] Bump dependencies versions"
+          --git-repo-local .
+          --debug
+
+
+  update-adp-chassis-version-conditions:
+    - task: is-version-sharp
+      description: Returns false in case of RC/snapshot versions
+      cmd:
+        - test "${var.update-adp-chassis-product-version}" = "${env.UPDATE_ADP_CHASSIS_LIBRARY_VERSION}"
+
+
+  ciscat-scan:
+    - rule: batteries.ciscat
+      properties:
+        - override-is-microcbo-flag: "True"
+        - product-name: "eric-oss-assurance-indexer"
+        - product-contact: "PDLTHEAGGR@pdl.internal.ericsson.com"
+        - image-to-scan: armdocker.rnd.ericsson.se/proj-oss-assurance-ci-internal/eric-oss-assurance-indexer:${var.chart-version}
+
+
+  nmap:
+    - rule: batteries.nmap
+      properties:
+        - config-file: "ci-cd/config/va/nmap_config.yaml"
+        - product-contact: "PDLTHEAGGR@pdl.internal.ericsson.com"
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # RELEASE PIPELINE
+  # --------------------------------------------------------------------------------------------------------------------
+  maven-release-update-version:
+    - rule: maven.mvn
+      properties:
+        - maven-args: versions:set -DnewVersion=${var.version} -DprocessAllModules -DgenerateBackupPoms=false
+
+
+  maven-release-push:
+    - rule: maven.mvn
+      properties:
+        - maven-args: deploy
+        - maven-extra-args: ${project-maven-args} -P ci-deploy -DaltDeploymentRepository=${project.maven-repository-id}::${project.maven-repository-release-url}
+        - maven-extra-opts: ${project-maven-opts}
+
+
+  release-prepare:
+    - rule: batteries-build.init-release-version
+    - rule: batteries-build.release-prepare
+    - rule: maven-release-update-version
+    - rule: maven-clean
+    - rule: maven-build
+
+
+  release-push:
+    - rule: maven-release-push
+    - rule: batteries-build.publish-release-docker
+    - rule: batteries-build.helm-push
+#    - rule: batteries-build.deliverables-promote
+    - rule: batteries-build.generate-artifact-properties
+    - rule: batteries-build.create-tag
+    - rule: batteries-build.increment-version
+    - rule: marketplace-upload-release
+
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # UPLOAD TO ADP MARKETPLACE
+  # --------------------------------------------------------------------------------------------------------------------
+
+  # Generate documents: .md to .pdf & .html, prepare for uploading to Eridoc later
+  generate-docs:
+    - task: markdown-to-pdf
+      docker-image: images.adp-release-auto
+      cmd: 'doc-handler generate --config ci-cd/config/documentation/marketplace/documentation_in_markdown.yaml
+                                 --output ./build/docs/pdf
+                                 --stylesheet doc/stylesheet/pdf_style.css
+                                 --format pdf'
+
+
+  # Prepare zip package documents for marketplace upload
+  generate-doc-zip-package:
+    - task: generate-doc-zip
+      docker-image: images.adp-release-auto
+      cmd: 'doc-handler generate --config ci-cd/config/documentation/marketplace/marketplace_config.yaml
+                                 --output ./build/docs-marketplace
+                                 --format html
+                                 --zip'
+
+
+  # Upload zip package documents to ARM dev
+  marketplace-upload-dev:
+    - rule: generate-docs
+    - rule: generate-doc-zip-package
+    - task: upload-doc-to-arm
+      docker-image: images.adp-release-auto
+      cmd: marketplace upload --arm-api-token ${common.arm-token}
+        --arm-url ${arm-doc-dev}
+        --config ci-cd/config/documentation/marketplace/marketplace_upload_config.yaml
+        --dev
+        --debug
+        --refresh
+        --portal-token ${env.MARKETPLACE_AIS_TOKEN}
+
+
+  # Upload zip package documents to ARM release
+  marketplace-upload-release:
+    - rule: generate-docs
+    - rule: generate-doc-zip-package
+    - task: upload-doc-to-arm
+      docker-image: images.adp-release-auto
+      cmd: marketplace upload --arm-api-token ${common.arm-token}
+        --arm-url ${arm-doc-released}
+        --config ci-cd/config/documentation/marketplace/marketplace_upload_config.yaml
+        --version ${var.image-version}
+        --debug
+        --refresh
+        --portal-token ${env.MARKETPLACE_AIS_TOKEN}

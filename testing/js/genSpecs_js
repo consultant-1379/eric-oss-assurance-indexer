@@ -1,0 +1,14 @@
+const indexer = require("../samples/soa.json");
+
+const fs = require("fs");
+
+const writers = JSON.parse(JSON.stringify(indexer.writers));
+
+for (const writer of writers) {
+  const theTopic = writer.inputSchema;
+  indexer.source.name = theTopic;
+  indexer.name = `soa-indexer-${theTopic}`;
+  indexer.description = `soa indexer for ui testing (topic: ${theTopic})`;
+  indexer.writers = [writer];
+  fs.writeFileSync(`./indexerSpecs/${theTopic}.json`, JSON.stringify(indexer, null, 2));
+}

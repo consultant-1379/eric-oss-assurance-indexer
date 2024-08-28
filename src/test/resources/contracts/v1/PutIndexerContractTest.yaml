@@ -1,0 +1,58 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+name: Put Indexer Contract Test
+description: Register an indexer, which will read DMM records and add corresponding documents a target Search Engine index. If the indexer does not already exist, create it. If a previous indexer of the same name exists, overwrite it.
+request:
+  method: PUT
+  urlPath: /v1/indexer-info/indexer
+  headers:
+    Content-Type: application/json
+  body:
+    name: nameOfIndexerA
+    description: description for indexer A
+    source:
+      name: KafkaTopicName
+      type: pmstatsexporter
+    target:
+      displayName: SearchIndexA_DisplayName
+      name: search_index_a_name
+      indexDescription: SearchIndexA_Description
+    writers:
+      - name: writerA_name
+        inputSchema: writerA_schemaRegistryName
+        context:
+          - name: contextFieldA_name
+            displayName: Context Field A
+            nameType: straight
+            recordName: contextFieldA_recordName
+            description: contextFieldA Description
+        value:
+          - name: valueFieldA_name
+            displayName: Value Field A
+            unit: errors/minute
+            type: float
+            recordName: valueFieldA_recordName
+            description: valueFieldA Description
+        info:
+          - name: infoFieldA_name
+            displayName: Info Field A
+            type: string
+            recordName: infoFieldA_recordName
+            description: infoFieldA Description
+response:
+  status: 200
+

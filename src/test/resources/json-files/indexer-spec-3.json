@@ -1,0 +1,66 @@
+{
+  "name" : "ESOA-2-Indexer",
+  "description" : "description for indexer ESOA-2-Indexer",
+  "source" : {
+    "name" : "pm-stats-calc-handling-avro-scheduled",
+    "type" : "pmstatsexporter"
+  },
+  "target" : {
+    "name" : "index-a",
+    "displayName" : "SearchIndex-A_DisplayName",
+    "indexDescription" : "SearchIndex-A_Description"
+  },
+  "writers" : [
+    {
+      "name" : "writerA_name",
+      "inputSchema" : "schema.kpi_simple_ssnssai_15",
+      "context" : [
+        {
+          "name" : "SNSSAI",
+          "nameType" : "straight",
+          "recordName" : "SNSSAI",
+          "description" : "contextField SNSSAI description"
+        },
+        {
+          "name" : "NF",
+          "nameType" : "straight",
+          "recordName" : "NF",
+          "description" : "contextField NF description"
+        },
+        {
+          "name" : "Collection",
+          "nameType" : "colonSeparated",
+          "recordName" : "Collection",
+          "description" : "contextField Collection description"
+        }
+      ],
+      "value" : [
+        {
+          "name" : "AMFMeanRegNbr",
+          "type" : "float",
+          "recordName" : "csac_0fcf6508_67cc_4969_1f2f_566c106e38b0",
+          "description" : "valueField AMFMeanRegNbr Description"
+        },
+        {
+          "name" : "AMFMaxRegNbr",
+          "type" : "integer",
+          "recordName" : "csac_9a6ec349_5637_4c92_8bfd_a55630f442d5",
+          "description" : "valueField AMFMaxRegNbr Description"
+        }
+      ],
+      "info" : [
+        {
+          "name" : "begin_timestamp",
+          "type" : "time",
+          "recordName" : "aggregation_begin_time",
+          "description" : "infoField begin_time Description"
+        }, {
+          "name" : "end_timestamp",
+          "type" : "time",
+          "recordName" : "aggregation_end_time",
+          "description" : "infoField end_time Description"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+
+const assert = require('assert');
+
+const { Kafka } = require('kafkajs');
+const avroSchemaRegistry = require('avro-schema-registry');
+
+const d = require("../samples/data.json");
+const indexer = require("../samples/soa.json");
+
+const namespace = "soa";
+
+// const seleced_topics = ['site', 'site_generic']; // kafka-0
+// const seleced_topics = ['nf', 'snssai']; // kafka-1
+const seleced_topics = ['nsi', 'nf_generic'];  //kafka-2
+
+const schemas = indexer.writers.reduce((schemas, writer) => {
+  return {
+    ...schemas,
+    [writer.inputSchema]: {
+      "type": "record",
+      "name": writer.name.toLowerCase(),
+      "namespace": namespace,
+      "fields": [
+        ... writer.name.split('_').map(context => ({ "name": context, "type": "string"})),
+        {"name": "AMFMeanRegNbr", "type": "long"},
+        {"name": "AMFMeanRegNbr2", "type": "long"},
+        {"name": "AMFMeanRegNbr3", "type": "long"}
+      ]
+    }
+  };
+}, {});
+
+
+const avroRecords = d.map(({doc}) => {
+  let context = doc.context.map((x) => x);
+  let schema = "???";
+  if (context.length == 1) 
+    schema = `${namespace}.${context[0].toLowerCase()}`;
+  else if (context.length == 2) {
+    schema = `${namespace}.${context[0].toLowerCase()}_generic`;
+    if (! (schema in schemas)) {
+      context = [context[1], context[0]];
+      schema = `${namespace}.${context[0].toLowerCase()}_generic`;
+    }
+  }
+  assert (schema in schemas, `schema ${schema} not found for doc: ${JSON.stringify(doc)}`);
+  
+  const fullContext = doc["full_context"];
+  const avroRecord = {
+    [context[0]]: doc[`c_${context[0]}`],
+    AMFMeanRegNbr: 0,
+    AMFMeanRegNbr2: 0,
+    AMFMeanRegNbr3: 0
+  };
+
+  Object.keys(doc).forEach((key) => {
+    if (key.startsWith("vi_")) {
+      const valueRecordName = key.split(`_${fullContext}_`)[1];
+      avroRecord[valueRecordName] = doc[key];
+    } else if (key.startsWith("c_")) {
+      if (key != `c_${context[0]}`) {
+        const contextName = key.split("c_")[1];
+        avroRecord["generic"] = `${contextName}:${doc[key]}`;
+      }
+    }
+  });
+  return {schema: schemas[schema], avroRecord, doc};
+});
+
+// console.log(JSON.stringify(schemas, null, 2));
+// console.log(JSON.stringify(avroRecords, null, 2));
+
+// assert(false, "stop" );
+
+const kafka = new Kafka({
+  clientId: 'avro-generator-js',
+  brokers: ['localhost:9092']
+});
+
+const registry = avroSchemaRegistry('http://localhost:8081');
+
+async function produceAvroRecords(avroRecords) {
+
+  // Create a Kafka producer
+  const producer = kafka.producer();
+  let numberRecordsSent = 0;
+  await producer.connect();
+
+  for (const {schema,avroRecord,doc} of avroRecords) {
+    if (! seleced_topics.includes(schema.name)) continue;
+    const theTopic = `soa.${schema.name}`;
+    console.log(`Sending in AVRO format:
+      - record: ${JSON.stringify(avroRecord)}
+      - topic: '${theTopic}'
+      - schema: ${JSON.stringify(schema)}
+      - for generating doc: ${JSON.stringify(doc)}`);
+  // Create an Avro record
+  
+    const encodedRecord = await registry.encodeMessage(theTopic, schema, avroRecord);
+
+  
+    try { // Send the Avro record to Kafka
+    
+      const result = await producer.send({
+        topic: theTopic,
+        messages: [{ value: encodedRecord }]
+      });
+      console.log('Message sent:', result);
+      numberRecordsSent++;
+    } catch (err) {
+      console.error('Error sending message:', err);
+    } 
+  };
+  
+  await producer.disconnect();
+  console.log(`Sent ${numberRecordsSent} records`);
+}
+
+
+
+produceAvroRecords(avroRecords).catch(console.error);
+

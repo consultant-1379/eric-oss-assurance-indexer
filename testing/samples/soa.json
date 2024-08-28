@@ -1,0 +1,116 @@
+{
+  "name" : "assurance-soa-indexer-for-ui-testing",
+  "description" : "soa indexer for ui testing",
+  "source" : {
+    "name" : "soa-topic",
+    "type" : "pmstatsexporter"
+  },
+  "writers" : [ {
+    "inputSchema" : "soa.nf",
+    "name" : "NF",
+    "context" : [ {
+      "name" : "NF"
+    } ],
+    "value" : [{
+      "name" : "AMFMeanRegNbr",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr2",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr3",
+      "type" : "integer"
+    } ]
+  }, {
+    "inputSchema" : "soa.nf_generic",
+    "name" : "NF_generic",
+    "context" : [ {
+      "name" : "NF"
+    }, {
+      "name": "generic",
+      "nameType" : "colonSeparated"
+    } ],
+    "value" : [ {
+      "name" : "AMFMeanRegNbr",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr2",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr3",
+      "type" : "integer"
+    } ]
+  }, {
+    "inputSchema" : "soa.nsi",
+    "name" : "NSI",
+    "context" : [ {
+      "name" : "NSI"
+    } ],
+    "value" : [ {
+      "name" : "AMFMeanRegNbr",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr2",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr3",
+      "type" : "integer"
+    } ]
+  }, {
+    "inputSchema" : "soa.site_generic",
+    "name" : "Site_generic",
+    "context" : [ {
+      "name" : "Site"
+    }, {
+      "name": "generic",
+      "nameType" : "colonSeparated"
+    } ],
+    "value" : [ {
+      "name" : "AMFMeanRegNbr",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr2",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr3",
+      "type" : "integer"
+    } ]
+  }, {
+    "inputSchema" : "soa.site",
+    "name" : "Site",
+    "context" : [ {
+      "name" : "Site"
+    } ],
+    "value" : [ {
+      "name" : "AMFMeanRegNbr",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr2",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr3",
+      "type" : "integer"
+    } ]
+  }, {
+    "inputSchema" : "soa.snssai",
+    "name" : "SNSSAI",
+    "context" : [ {
+      "name" : "SNSSAI"
+    } ],
+    "value" : [ {
+      "name" : "AMFMeanRegNbr",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr2",
+      "type" : "integer"
+    }, {
+      "name" : "AMFMeanRegNbr3",
+      "type" : "integer"
+    } ]
+  } ],
+  "target" : {
+    "displayName" : "Display Name for 'SOA' index.",
+    "name" : "assurance-soa",
+    "indexDescription" : "SOA index description"
+  }
+}

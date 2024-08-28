@@ -1,0 +1,33 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+model_version: 2.0
+product_va_config:
+  name: Assurance Indexer Service
+  product_name: eric-ms-chassis
+  version: {version}
+  va_template_version: 2.0.0
+  description: Assurance Indexer Service with Bob based CI and release automation pipelines
+  images:
+    - /eric-oss-assurance-indexer:{version}
+
+  mitigations:
+    CVE-2015-8855:
+      mitigation: This is a placeholder, example mitigation. Add mitigation steps below.
+      sce:
+        sce-id: SCE-1234-00
+        status: Pending
+        expires: 2022-12-10T00:00:00Z

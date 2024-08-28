@@ -1,0 +1,144 @@
+modelVersion: 2.0
+
+description: "Ericsson eric-oss-assurance-indexer Microservice"
+
+properties:
+
+  #
+  # Image versions
+  #
+  - adp-checkers-tag: "latest"  # Version of bob-adp-checker to use, latest is recommended for master, and most likely also for release branch/EP. Other version can be found in lint-test-metadata.json in arm. Switch if needed (BWC breaks)
+  - adp-helm-dr-check-tag: "latest"  # Version of common-library-adp-helm-dr-check to use, latest is recommended for master. Can be changed for release branch/EP handling if needed to value found in lint-test-metadata.json in arm.
+  - adp-image-dr-check-tag: "latest"  # Version of adp-image-dr-check to use, latest is recommended for master. Can be changed for release branch/EP if needed to value found in lint-test-metadata.json in arm.
+  - battery-toolbox-image: armdocker.rnd.ericsson.se/proj-cat-drop/battery-toolbox:latest
+  - battery-toolbox-modules-compare-with-version: "latest"  # Switch to base version (x.y.0+b) in case of release branch / EP handling (for master branch keep as latest). Used for va-test and pi comparisons
+  - beam-dr-check-tag: "latest"  # Version of beam-dr-checker to use in service-lint, latest is recommended for master. Can be changed for release branch/EP handling if needed to value found in lint-test-metadata.json in arm.
+  - bss-helm-dr-check-tag: "latest"  # Version of bss-helm-checker to use, latest is recommended for master. Can be changed for release branch/EP if needed to value found in lint-test-metadata.json in arm.
+  - cbos-age-tool-custom-verification-date: "latest"  # Latest should be used in master.Consider switch to desired reference date for EP release
+  - common-base-repo-version: 6.9.0-7
+  - hadolint-scan-tag: "latest"  # Version of hadolint-scan to use, latest is recommended for master. Can be changed for release branch/EP if needed to value found in lint-test-metadata.json in arm.
+  - verify-design-rules-central-data-tag: "latest"  # Can be changed for release branch/EP handling if needed to value found in lint-test-metadata.json in arm, sample value format 3070313b7cc5e81a69ce8b197b40b16d6ea50fe1.
+  - version-increment-policy: MINOR
+
+  #
+  # TPG/repo config
+  #
+  - execute-generate-toolbox-documentation: true
+  - execute-validate-toolbox-settings: true
+  - fail-on-validate-toolbox-conventions: true
+  - git-submodule-batteries-name: batteries
+  - analytics-product-name: eric-oss-assurance-indexer
+  - product-name: eric-oss-assurance-indexer
+  - product-contact: "PDLTHEAGGR@pdl.internal.ericsson.com"
+  - swrecord-path: "deliverables/target/classes/SW_Record.txt"
+  - docker-image-name: eric-oss-assurance-indexer
+  - helm-chart-name: eric-oss-assurance-indexer
+  - helm-chart-module-name: helm/eric-oss-assurance-indexer
+  - deliverables-arm-staging-path: "proj-bos-assurance-staging-local/com/ericsson/bos/assurance/eric-oss-assurance-indexer/deliverables/${var.image-version}/"
+  - deliverables-arm-release-repo: proj-bos-assurance-release-local
+  - docker-repository-drop: "proj-bos-assurance-drop-docker-global"     # Used by service-malware-eppki-mss, service-va-report.
+  - docker-registry: "armdocker.rnd.ericsson.se"
+  - docker-repository-released: "proj-bos-assurance-released-docker-global"    # Used by service-malware-eppki-mss, service-va-report.
+  - helm-project-drop: "proj-bos-assurance-drop-helm"
+  - helm-project-release: "proj-bos-assurance-released-helm"
+  - docker-project-release: proj-bos-assurance-released
+  - git-repo-url: "https://gerrit-gamma.gic.ericsson.se/OSS/com.ericsson.oss.air/eric-oss-assurance-indexer"
+  - docker-project-drop: proj-bos-assurance-drop
+  - directory-of-dockerfile: .
+  - fullpath-to-dockerfile: container/eric-oss-assurance-indexer/build.sh
+  - git-submodule-batteries-name: batteries
+  - tpg-name: "esoa"  # Used by service-malware-eppki-mss, integration-va-report, integration-pre-release, integration-hf-pre-release, service-va-report
+  - helmfile-name: eric-oss-assurance-indexer-helmfile-dummy #dummy value
+  - pre-release-tpg-dv-pattern: eric-oss-assurance-indexer
+  - va-report-kubesec-include-result: "*-AIS-*"
+
+
+  #
+  # VA
+  #
+  - security-master-gerrit-reviewer: "david.a.neudorf@ericsson.com"  # Update as needed. Gerrit review group containing PSM and/or Security Masters that should be auto-invited to commits that has a positive or negative verdict from va-test point of view. Used by service-va-test.
+  - va-arm-dev-repo: "proj-bos-assurance-va-dev-generic-local"  # Arm repo where va artifacts will be stored for later use, such as for generating aggregated va-report, service level va-report, diff comparison in presubmit va-test, vulnerability diff in PRI.
+  - va-path-to-vulnerability-report-config: "ci-cd/config/va/report_config.yaml"  # Update as needed. Full path to the Vulnerability Report config file as described in https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/adp-cicd/bob-adp-release-auto/+/master/vulnerability_analysis_2.0/. Config should keep base information about product, included images, SPOC and already performed analysis and mitigations/exemptions. Used by service-va-report and service-va-test.
+  - va-test-wiki-containerization-vulnerability-impact: "https://eteamspace.internal.ericsson.com/display/BSSDO/Vulnerability-Analysis+via+service-va-test"  # Update as needed. Wiki link to include in gerrit messages detailing Vulnerability-Analysis-Test verdicts detailing the process the organization should use. Appointed PSM should decide and document process to follow. See sample wikis from consumer point of view "https://eteamspace.internal.ericsson.com/display/TPGCHA/Containerization+Vulnerability+Impact" ,"https://rmca.bss.seli.gic.ericsson.se/wiki/index.php/Vulnerability_Analysis". Used by service-va-test.
+  - vulnerability-config-auto-updated-with-tools-versions: "True"  # Valid values are True and False. Used by service-va-report, service-va-test, service-pre-release, integration-hf-va-test, integration-hf-pre-release
+  - service-va-report-check-if-semver-released-strategy: "manual"  # Update as needed. Possible values are "helm" and "manual". If helm is selected, then the semver is extracted from CHART_VERSION and a check is done towards settings.helm-project-release}/settings.helm-chart-name/settings.helm-chart-name-var.service-va-report-helm-chart-semver+" to see if it is released or not. If manual is selected, then consumer needs to populate .bob/var.service-va-report-helm-artifact-semver-released based on own logic before service-va-report generate-finalize-va-report is invoked. (might be expanded in the future, docker might be one future option). Used by service-va-report.
+  - service-va-report-fetch-va-and-str-from-va-hub-datalake: "False"  # TODO: Enable datalake upload. Update as needed. Possible values are "True" and "False". Should only be set to True if datalake integration is in place and if PSM wants the job to fetch the Vulnerability Report and Security Test Report from datalake in verify-va-report. Used by service-va-report.
+
+  - va-report-ciscat-harden-image: "True"  # Update as needed. Possible values are "True" and "False". Indicates whether the hardening script will be applied on the custom built image which ciscat will be executed on. Used by service-va-report.
+  - va-report-exit-on-evaluate-resultcodes: "False"  # Update as needed. Possible values are "True" and "False". Most consumers configure False to let Security Release Verification Pipeline not be halted by temporary glitches and issues and failed scans and instead let it run to completion where data is collected in verify-pre-release whereupon Release Decision can be taken based on all available information. Indicates whether exit var.highest-resultcode-xxx should be executed. Used by integration-hf-va-report, service-va-report, integration-va-report
+  - va-report-generate-adp-va-report-for-va-hub: "False"  # TODO: Enable datalake upload. Update as needed. Possible values are "True" and "False". Should only be switched to True once the service level product have been registered in datalake and required permissions have been given. See checklist at https://eteamspace.internal.ericsson.com/display/BSSDO/VA+Hub+integration. Used by service-va-report
+  - va-report-generate-experimental-va-report: "True"  # Update as needed. Possible values are "True" and "False". Will use the experimental template in batteries/template/va_report_template_local.md. This attempts to follow latest template https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/adp-cicd/bob-adp-release-auto/+/master/vulnerability_analysis_2.0/templates/fetch_report.md.template but with local adaptations such as checksum, dockerbenchscore, appendix and some formatting improvements. Feedback from PSMs are welcome. Used by service-va-report
+  - va-report-run-ciscat-scan: "True"  # Update as needed. Possible values are "True" and "False". Indicate whether ciscat scan should be executed. Used by service-va-report ## Section VA
+  - va-report-upload-to: "datalake"  # Possible value is only "datalake". In the past "va-hub" and "all" were allowed as well but these being deprecated in favor of only supporting datalake. Indicates where to upload the va-report and data to. Related to va-report-generate-adp-va-report-for-va-hub (for service-va-report). For pre-release, actual opt-in via rule invocation required.  Used by integration-hf-pre-release, service-va-report (generate_aggregated_va_report.sh)
+  - va-xrayscan-docker-drop-project: "proj-bos-assurance-drop-docker-global"  # Update as needed. Other possible naming schemes are docker-v2-global-proj-todo-xray-local and docker-v2-global-proj-todo-drop-xray-local. Used to populate var.va-report-xrayscan-docker-project-in-use in case var.va-report-helm-chart-version does not contain a "+". The var.va-report-helm-chart-version is used for both triggering re-scan as well as fetching xray results using fetch-xray command. Used by service-va-report
+  - va-xrayscan-docker-released-project: "proj-bos-assurance-released-docker-global"  # Update as needed. Other possible naming schemes are docker-v2-global-proj-todo-xray-local and docker-v2-global-proj-todo-released-xray-local. Used to populate var.va-report-xrayscan-docker-project-in-use in case var.va-report-helm-chart-version does contain a "+". The var.va-report-helm-chart-version is used for both triggering re-scan as well as fetching xray results using fetch-xray command. Used by service-va-report
+  - service-eric-oss-assurance-indexer: eric-oss-assurance-indexer
+  - va-report-eric-oss-assurance-indexer-zapconfig-gui-template: ci-cd/config/va/zapConfig_GUI_template.yaml
+  - va-report-tenable-scan-name-prefix: "OSS ESOA"
+  - va-report-zap-helmdocker-version: latest
+  - va-report-zap-image-version: latest
+  - va-report-eric-oss-assurance-indexer-defensics-scan-options: "--verbose"
+  - va-report-eric-oss-assurance-indexer-defensics-scan-testplandir: "ci-cd/config/va/defensics/testplan/"
+  - va-report-eric-oss-assurance-indexer-defensics-scan-test-suite: "http-server"
+  - va-report-eric-oss-assurance-indexer-defensics-scan-input-json-values: {
+      "service": "eric-oss-assurance-indexer", "port": "8080"}
+  - va-report-eric-oss-assurance-indexer-defensics-scan-properties: "uri\
+      \ http://eric-oss-assurance-indexer:8080"
+  - va-report-defensics-skip-services-status-check: "True"
+
+  #
+  # Lint
+  #
+  - adp-design-rule-flags: ${skipped-common-helm-design-rule-flags}  # Approved rules to skip checking in presubmit lint-test
+  - arm-docs-dev-repo: "proj-bos-assurance-docs-dev-generic-local"  # Arm repo where metadata-artifacts, pi-artifacts, release-artifacts and test-artifacts (lint related) will be stored.
+  - bss-design-rule-flags: ""  # Approved rules to skip checking in presubmit lint-test
+  - cbos-age-tool-regex-to-filter-reports-by-service-name: ""  # Empty string or (eric-bss-<name>) if empty all cbos-age-tools reports (including dependency services) will be considered. Set regex to filter only TPGs service reports.
+  - fail-on-snapshot-found: "True"  # update to match expectation. Valid values are True and False. Set to True if build should be failed in case snapshot dependencies are found.
+  - fullpath-to-hadolint-customconfig-yaml: "ci-cd/config/va/hadolint_config.yaml"  # Full path to hadolint custom_config.yaml where ignored rules can be added after analysis. format should be format: tty in config file.
+  - ignore-snapshot-files: ""  # Should ideally be empty. Indicates which files that can be considered to be ignored when checking for snapshot versions. Used by service-lint.
+  - image-design-rule-flags: "" 
+  - skipped-common-helm-design-rule-flags: "":
+  - run-cbos-age-tool-for-lint-rules: "True"
+  - schema-repo-link: ""  # Update as needed. Link to repository with AVRO schema collection (beam-dr-checker related).
+  - service-chart-repo-link: ""  # Update as needed. Link to repository with TPG service chart collection (beam-dr-checker related).
+  - skip-failing-cbos-age-tool: "False"  # Update as needed. Possible values are "True" and "False". Set to True to make mandatory_ok_for_release parameter value No in junit report.
+  - skipped-beam-design-rules: ""  # String containing list of skipped beam-design-rules that will be appended to beam-dr-checker command.
+  - verify-design-rules-adp-design-rule-flags: ""  # Approved rules to skip checking in verify-design-rules
+  - verify-design-rules-beam-design-rule-flags: ""  # Approved rules to skip checking in verify-design-rules
+  - verify-design-rules-bss-design-rule-flags: ""  # Approved rules to skip checking in verify-design-rules
+  - verify-design-rules-image-design-rule-flags: ""  # Approved rules to skip checking in verify-design-rules
+
+
+  #
+  # Malware
+  #
+  - malware-arm-dev-repo: "proj-bos-assurance-va-dev-generic-local"  #Update as needed. Arm repo where malware result artifacts will be stored (eppki-mss and clamscan).
+  - malware-exit-on-evaluate-resultcodes: "True"  #Update as needed. Possible values are "True" and "False"
+  - malware-scan-found-issues-jira-card-comment: https://eteamproject.internal.ericsson.com/rest/api/2/issue/BSS_TODO-TODO/comment"  # TODO Update as needed so BSS_TODO-TODO points to a valid jira card of type Story. Will get comment by automation when malware (infected or pua) is detected. PSM, Security Master, BM and RelTech should watch this Jira card.
+  - malware-scan-notify-to-jira: "False"  # Update as needed. Possible values are "True" and "False". Set to True if jira notifications should be sent for interesting findings.
+  - organisation: "BCSDIDSBB$SWDPCATEST"  # TODO Update as needed (temporary using SWDPTest org). Should be the value of the organisation registered with eppki-mss for conducting malware scans. See https://erilink.ericsson.se/eridoc/erl/objectId/09004cffc856a7a9?docno=1/19815-CXP9039947Uen&action=current&format=pdf. Line manager needs to take action.
+  # TODO: Place cat ticket requesting that eppkimss6 has download access to your docker repo
+  #  "uri": "https://arm.seli.gic.ericsson.se/artifactory/docker-v2-global-local/proj-bos-assurance-drop/eric-oss-assurance-indexer/1.4.0-1",
+  #  [{"status": "ABORTED", "result": "FAIL", "code": "ARTIFACT_DOWNLOAD_PROBLEM", "message": "Product not found in the repository for download"},
+  # From 3.3.1 Access to Software to Scan
+  # The EPPKIMSS6 user must be granted read access to the archive areas in ARM or EriDoc or
+  # ACA where the SW to be scanned is stored.
+
+
+  #
+  # SONAR-scan
+  #
+  - sonarqube-server: "https://codeanalyzer2.internal.ericsson.com"
+  - quality-test-exit-on-evaluate-resultcodes: "True"
+  - sonar-evaluate-quality-gate: "True"
+
+
+env:
+  - DOCKER_PROJECT (default=proj-bos-assurance)
+  - HELM_DROP_REPOSITORY (default=https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-drop-helm-local)
+  - HELM_RELEASED_REPOSITORY (default=https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-released-helm-local)
+  - HELM_REPOSITORY (default=https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-ci-internal-helm-local)
+
+
+var:
+  - image-version

@@ -1,0 +1,108 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: 2.0
+
+description: "eric-oss-assurance-indexer Project Properties"
+
+import:
+  common: ci-cd/bob-rulesets/common-rules.yaml
+
+properties:
+  # Product properties
+  - application-product-name: eric-oss-assurance-indexer
+  - spring-application-name: eric-oss-assurance-indexer
+  - ericsson-product-number:
+  - ericsson-product-name: "eric-oss-assurance-indexer"
+  - evms-product-name: ${ericsson-product-name}
+  - image-product-number: "CXC90001"
+  - source-product-number: "CXC 201 0000"  # Needs to be changed
+  ## Node/TPG Name
+  - product-node-name: 'eric-oss-assurance-indexer Application'
+  ## Email of the SPOC or DL
+  - product-contact: "PDLTHEAGGR@pdl.internal.ericsson.com"
+
+
+  # Image properties
+  - image-name: eric-oss-assurance-indexer
+  - image-name-full: ${env.DOCKER_REGISTRY}/${env.DOCKER_PROJECT}/${image-name}
+  - image-title: eric-oss-assurance-indexer
+  - image-product-number: "CXC90001"
+  - image-context: target
+  - image-registry-url: armdocker.rnd.ericsson.se
+  - image-base-os-version: 6.17.0-11
+  # Workaround munin scripts limitation. Should be removed once ADPPRG-108518 is implemented
+  - image-base-os-product-version: $(echo "${image-base-os-version}" | grep -Eo '([0-9]+.[0-9]+.[0-9]+)')
+
+  # Helm properties
+  - helm-chart-name: eric-oss-assurance-indexer
+  - helm-chart-product-number: "CXC90001"  # Needs to be changed
+
+  # ADP chassis version
+  - adp-chassis-library-version: 2.1.1
+  - adp-chassis-generator-image: armdocker.rnd.ericsson.se/proj-adp-chassis-drop/eric-adp-java-microservice-chassis
+  - adp-chassis-generator-image-tag: 2.1.3-5
+
+  # ARM properties
+  - arm-repository-url: https://arm.seli.gic.ericsson.se/artifactory
+  - arm-project-name: proj-bos-assurance
+
+  # Maven properties
+  - maven-repository-id: arm
+  - maven-repository-snapshot-url: "https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-dev-local"
+  - maven-repository-release-url: "https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-release-local"
+
+  # Spring Boot App properties
+  - spring-application-name: eric-oss-assurance-indexer
+  - spring-boot-module-name: eric-oss-assurance-indexer-app
+  - spring-boot-app-artifact-directory: "target"
+  - spring-boot-app-jvm: "${spring-application-name}-${common.version-prefix}-SNAPSHOT.jar"
+
+  # Dependencies properties
+  - dependencies-files-folder: ci-cd/config/dependencies
+
+  # EriDoc properties
+  - eridoc-approver: ""
+  - eridoc-responsible: ""
+
+  # Jira properties
+  - jira-component-name: "eric-oss-assurance-indexer"
+  - jira-prefix: ""
+  - jira-url: "https://eteamproject.internal.ericsson.com"
+
+  # Gerrit properties
+  - gerrit-url: "https://gerrit-gamma.gic.ericsson.se"
+  - gerrit-project-name: "eric-oss-assurance-indexer"
+
+  # Munin properties
+  - munin-files-folder: ci-cd/config/plms
+  - munin-product-structure: ${munin-files-folder}/product_structure.yaml
+  - munin-output-documents-file: ${munin-files-folder}/documents.yaml
+
+  # SWCA properties
+  - swca-policy: UAT_Policy
+  - git-ca-repo-name: eric-oss-assurance-indexer
+  - aca-helm-container: eric-oss-assurance-indexer
+
+  - image-project: ${env.DOCKER_PROJECT}
+
+  - common.ci-html-reports-directory: ${env.HTML_REPORT_DIR}
+
+env:
+  - DOCKER_PROJECT(default=proj-bos-assurance)
+  - DOCKER_REGISTRY(default=armdocker.rnd.ericsson.se)
+  - HELM_REPOSITORY(default=https://arm.seli.gic.ericsson.se/artifactory/proj-bos-assurance-ci-internal-helm-local)
+  - USER(default=jenkins)

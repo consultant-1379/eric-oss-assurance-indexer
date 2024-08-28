@@ -1,0 +1,67 @@
+{
+  "properties": {
+    "full_context":    { "type" : "keyword" },
+    "context":     { "type" : "keyword" }
+  },
+  "dynamic_templates" : [
+    {
+      "xc_template" : {
+        "match" : "xc_*",
+        "mapping" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "xv_template" : {
+        "match" : "xv_*",
+        "mapping" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "context_template" : {
+        "match" : "c_*",
+        "mapping" : {
+          "type" : "keyword"
+        }
+      }
+    },
+    {
+      "value_integer_template" : {
+        "match" : "vi_*",
+        "mapping" : {
+          "type" : "integer"
+        }
+      }
+    },
+    {
+      "value_double_template" : {
+        "match" : "vd_*",
+        "mapping" : {
+          "type" : "double"
+        }
+      }
+    },
+    {
+      "filter_keyword_template" : {
+        "match" : "fk_*",
+        "mapping" : {
+          "type" : "keyword"
+        }
+      }
+    },
+    {
+      "filter_keyword_template" : {
+        "match" : "ft_*",
+        "mapping" : {
+          "type" : "date",
+          "format" : "epoch_second"
+        }
+      }
+    }
+  ]
+}
+
+

@@ -1,0 +1,85 @@
+#
+# COPYRIGHT Ericsson 2021
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+  # Default values for eric-oss-assurance-indexer.
+  # This is a YAML-formatted file.
+  # Declare variables to be passed into your templates.
+{{- if  (eq (include "eric-oss-assurance-indexer.global-security-tls-enabled" .) "true") }}
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: {{ include "eric-oss-assurance-indexer.fullname" . }}
+  labels:
+  {{- $strimzi := dict -}}
+  {{- $_ := set $strimzi "strimzi.io/cluster" .Values.kafka.strimziCluster -}}
+  {{- $default := include "eric-oss-assurance-indexer.labels" . | fromYaml -}}
+  {{- include "eric-oss-assurance-indexer.mergeLabels" (dict "location" .Template.Name "sources" (list $strimzi $default)) | trim | nindent 4 }}
+  annotations:
+  {{- include "eric-oss-assurance-indexer.annotations" . | nindent 4 }}
+spec:
+  authentication:
+    type: tls-external
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: '*'
+          patternType: literal
+        operation: Write
+      - resource:
+          type: transactionalId
+          name: '*'
+          patternType: literal
+        operation: Write
+      - resource:
+          type: transactionalId
+          name: '*'
+          patternType: literal
+        operation: Describe
+      - resource:
+          type: topic
+          name: '*'
+          patternType: literal
+        operation: Read
+      - resource:
+          type: topic
+          name: '*'
+          patternType: literal
+        operation: Create
+      - resource:
+          type: topic
+          name: '*'
+          patternType: literal
+        operation: Alter
+      - resource:
+          type: topic
+          name: '*'
+          patternType: literal
+        operation: DescribeConfigs
+      - resource:
+          type: cluster
+        operation: Create
+      - resource:
+          type: cluster
+        operation: DescribeConfigs
+      - resource:
+          type: group
+          name: '*'
+          patternType: literal
+        operation: Read
+{{- end }}

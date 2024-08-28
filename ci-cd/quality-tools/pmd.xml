@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="pmd">
+  <description>Sonar Profile: pmd</description>
+  <rule ref="category/java/performance.xml/UseStringBufferLength">
+    <priority>4</priority>
+  </rule>
+  <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/codestyle.xml/UnnecessaryModifier">
+    <priority>5</priority>
+  </rule>
+  <rule ref="category/java/performance.xml/StringInstantiation">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable">
+    <priority>2</priority>
+  </rule>
+  <rule ref="category/java/design.xml/SimplifyConditional">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/performance.xml/AvoidArrayLoops">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/design.xml/SingularField">
+    <priority>4</priority>
+  </rule>
+  <rule ref="category/java/performance.xml/UseIndexOfChar">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/performance.xml/InefficientStringBuffering">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/performance.xml/BigIntegerInstantiation">
+    <priority>3</priority>
+  </rule>
+  <rule ref="category/java/performance.xml/UseArraysAsList">
+    <priority>3</priority>
+  </rule>
+</ruleset>

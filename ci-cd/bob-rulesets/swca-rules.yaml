@@ -1,0 +1,106 @@
+modelVersion: 2.0
+
+
+description: "SWCA Rules"
+
+
+import:
+  images: docker-images.yaml
+  common: common-rules.yaml
+
+
+properties:
+  - aca-arm-artifact-url: EMPTY
+  - aca-file-path-to-be-uploaded: EMPTY
+  - product-number: EMPTY
+  - swca-policy: EMPTY
+  - git-ca-repo-name: EMPTY
+  - aca-helm-container: EMPTY
+  - helm-chart-local-path: EMPTY
+  - replaced-repo-path-value: EMPTY
+
+
+var:
+  - aca-group-id
+  - aca-artifact-id
+
+
+env:
+  - SWCA_USER (default=)
+  - SWCA_PASSWORD (default=)
+
+
+rules:
+  aca-create-group-id:
+    - task: aca-create-group
+      docker-image: images.adp-release-auto
+      cmd: aca create-artifact-group
+        --username ${env.ERIDOC_USERNAME}
+        --password '${env.ERIDOC_PASSWORD}'
+        --policy ${swca-policy} > .bob/var.aca-group-id
+
+
+  aca-upload-register:
+    - rule: aca-create-group-id
+
+    - task: upload-from-arm
+      description: This command will upload an artifact from ARM link to ACA.
+      docker-image: images.adp-release-auto
+      cmd: aca upload-arm
+        --username ${env.SWCA_USER}
+        --password '${env.SWCA_PASSWORD}'
+        --arm-user ${env.common.ARM_USER}
+        --arm-password ${env.common.ARM_TOKEN}
+        --url ${aca-arm-artifact-url}
+        --group-id ${var.aca-group-id}
+        --policy ${swca-policy} | cut -d "/" -f6 | cut -d "]" -f1 > .bob/var.aca-artifact-id
+
+    - task: register-artifact-in-plms
+      description: This command registers the ACA artifact in Mimer product.
+      docker-image: images.adp-release-auto
+      cmd: aca register-plm
+        --username ${env.SWCA_USER}
+        --password '${env.SWCA_PASSWORD}'
+        --artifact-id ${var.aca-artifact-id}
+        --metadata productNumber=${product-number} productVersion=${var.common.version-prefix}
+
+
+  aca-upload-file:
+    - rule: aca-create-group-id
+    - task: upload-file
+      docker-image: images.adp-release-auto
+      cmd: aca upload-file
+        --username ${env.SWCA_USER}
+        --password '${env.SWCA_PASSWORD}'
+        --policy ${swca-policy}
+        --group-id ${var.aca-group-id}
+        --file ${aca-file-path-to-be-uploaded}
+
+
+  git-ca-register:
+    - task: gitca-register-plms
+      description: Registers ACA artifact in respective product in Munin
+      docker-image: images.adp-release-auto
+      cmd: gitca register-plm
+        --username ${env.SWCA_USER}
+        --password '${env.SWCA_PASSWORD}'
+        --policy ${swca-policy}
+        --product-number "${product-number}"
+        --version ${var.common.version-prefix}
+        --name ${git-ca-repo-name}
+        --commithash ${var.common.commithash}
+        --dry-run ${env.common.DRY_RUN}
+
+
+  upload-archive:
+    - task: upload-archive
+      docker-image: images.adp-release-auto
+      docker-in-docker: socket
+      cmd: aca upload-archive
+        --dry-run ${env.common.DRY_RUN}
+        --debug
+        --chart-path ${helm-chart-local-path}
+        --replace ${replaced-repo-path-value}=${aca-helm-container}
+        --helm-container ${aca-helm-container}
+        --username ${env.SWCA_USER}
+        --password ${env.SWCA_PASSWORD}

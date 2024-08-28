@@ -1,0 +1,47 @@
+{{- if .Values.kafka.topicCreate.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ais-kafka-topic-creator
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation , hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: ais-kafka-topic-creator
+        image: "{{ .Values.kafka.image.url }}{{ .Values.kafka.image.repoPath }}{{ .Values.kafka.image.name }}:{{ .Values.kafka.image.tag }}"
+        imagePullPolicy: {{ .Values.kafka.image.pullPolicy }}
+        env:
+        - name: BOOTSTRAPURL
+          value: {{ .Values.kafka.topicCreate.bootstrapServer }}
+        - name: TOPICS
+          {{- $args := list -}}
+          {{- range .Values.kafka.topicCreate.topics }} {{ $args = printf "%s:%s" .name (.partition | toString) | append $args }} {{ end }}
+          value: {{ $args | join "," | quote}}
+        command:
+        - bash
+        - -c
+        - |
+          cp /etc/confluent/docker/tools-log4j.properties /usr/config ## predefined location of tools-log4j.properties
+          IFS=','
+          read -ra topics <<< "$TOPICS"
+          for topic in ${topics[@]}
+          do
+            topicName=$(cut -d ':' -f1 <<<"$topic")
+            topicPartitions=$(cut -d ':' -f2 <<<"$topic")
+            echo "Creating topic $topicName with $topicPartitions partition(s)"
+            kafka-topics --bootstrap-server $BOOTSTRAPURL --create --topic $topicName --partitions $topicPartitions --if-not-exists
+          done
+    {{- if .Values.global }}
+      {{- if .Values.global.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.global.pullSecret }}
+      {{- end }}
+    {{- end }}
+      restartPolicy: Never
+  backoffLimit: 4
+{{- end -}}

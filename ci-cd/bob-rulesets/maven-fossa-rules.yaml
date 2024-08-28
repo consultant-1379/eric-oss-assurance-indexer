@@ -1,0 +1,69 @@
+modelVersion: 2.0
+
+
+description: "Common Fossa Analysis Rules"
+
+
+import:
+  images: docker-images.yaml
+  common: common-rules.yaml
+  maven: maven-rules.yaml
+
+
+properties:
+  - fossa-report: ${fossa-report-dir}/${fossa-report-name}
+  - fossa-report-name: fossa-report.json
+  - fossa-report-dir: ${common.ci-artifacts-directory}/3pp_analysis
+
+  - fossa-scan-status-check-timeout: 1800
+
+  - fossa-docker-flags: --env FOSSA_API_KEY=${env.FOSSA_TOKEN}
+  - fossa-extra-docker-flags: ""
+
+  - fossa-extra-args: ""
+  - fossa-exec: "fossa"
+
+
+var:
+  - maven-fossa-cmd
+  - maven-fossa-docker-flags
+
+
+env:
+  - FOSSA_TOKEN (default=)
+
+
+rules:
+  scan:
+    - rule: analyze
+    - rule: fetch-report
+
+
+  analyze:
+    - task: build-maven-fossa-cmd
+      cmd: echo "${fossa-exec} analyze ${fossa-extra-args}" > .bob/var.maven-fossa-cmd
+
+    - task: build-maven-fossa-docker-flags
+      cmd: echo ${fossa-docker-flags} ${fossa-extra-docker-flags} > .bob/var.maven-fossa-docker-flags
+
+    - rule: maven.mvn
+      properties:
+        - maven-cmd: ${var.maven-fossa-cmd}
+        - maven-extra-docker-flags: ${var.maven-fossa-docker-flags}
+
+
+  fetch-report:
+    - task: build-maven-fossa-cmd
+      cmd: echo "${fossa-exec} report attribution --json --timeout ${fossa-scan-status-check-timeout} ${fossa-extra-args} > ${fossa-report}" > .bob/var.maven-fossa-cmd
+
+    - task: build-maven-fossa-docker-flags
+      cmd: echo ${fossa-docker-flags} ${fossa-extra-docker-flags} > .bob/var.maven-fossa-docker-flags
+
+    - task: create-3pp-directory-in-artifacts
+      description: Creates a folder to store fossa report
+      cmd: mkdir -p ${fossa-report-dir}
+
+    - rule: maven.mvn
+      properties:
+        - maven-cmd: ${var.maven-fossa-cmd}
+        - maven-extra-docker-flags: ${var.maven-fossa-docker-flags}

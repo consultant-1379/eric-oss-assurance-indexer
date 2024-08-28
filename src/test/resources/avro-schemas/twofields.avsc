@@ -1,0 +1,8 @@
+{
+  "type": "record",
+  "name": "twofields",
+  "fields": [
+    {"name": "c", "type": "string"},
+    {"name": "v", "type": ["null","string"]}
+  ]
+}

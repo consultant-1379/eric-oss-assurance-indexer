@@ -1,0 +1,233 @@
+# Adding Data
+curl -k -XPOST "https://opensearch-node1:9200/soa/_bulk" -u 'admin:admin' -H 'Content-Type: application/json' -d'
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_BC::SNSSAI:1:1::"}}
+{ "full_context": "NF_SNSSAI", "context": [ "SNSSAI", "NF" ], "c_SNSSAI": "1:1", "c_NF": "AMF_BC", "vi_NF_SNSSAI_AMFMeanRegNbr": 10}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_BC::SNSSAI:1:2::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "1:2",    "c_NF": "AMF_BC",    "vi_NF_SNSSAI_AMFMeanRegNbr": 20}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_BC::SNSSAI:2:1::"}}
+{ "full_context": "NF_SNSSAI",     "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:1",    "c_NF": "AMF_BC",    "vi_NF_SNSSAI_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_ON1::SNSSAI:2:1::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:1",    "c_NF": "AMF_ON1",    "vi_NF_SNSSAI_AMFMeanRegNbr": 40}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_ON1::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON1",    "vi_NF_SNSSAI_AMFMeanRegNbr": 50}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_ON2::SNSSAI:2:1::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:1",    "c_NF": "AMF_ON2",    "vi_NF_SNSSAI_AMFMeanRegNbr": 60}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr@NF:AMF_ON2::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON2",    "vi_NF_SNSSAI_AMFMeanRegNbr": 70}
+{"index":{"_index":"soa","_id":"1SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "SNSSAI",  "context": ["SNSSAI"],    "c_SNSSAI": "1:1",    "vi_SNSSAI_AMFMeanRegNbr": 10}
+{"index":{"_index":"soa","_id":"2SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "1:2",    "vi_SNSSAI_AMFMeanRegNbr": 20}
+{"index":{"_index":"soa","_id":"3SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "2:1",    "vi_SNSSAI_AMFMeanRegNbr": 150}
+{"index":{"_index":"soa","_id":"4SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "2:2",    "vi_SNSSAI_AMFMeanRegNbr": 120}
+{"index":{"_index":"soa","_id":"1Site_AMFMeanRegNbr"}}
+{ "full_context": "Site",    "context": ["Site"],    "c_Site": "BC",    "vi_Site_AMFMeanRegNbr": 60}
+{"index":{"_index":"soa","_id":"2Site_AMFMeanRegNbr"}}
+{ "full_context": "Site",   "context": ["Site"],    "c_Site": "ON",    "vi_Site_AMFMeanRegNbr": 220}
+{"index":{"_index":"soa","_id":"1NSI_AMFMeanRegNbr"}}
+{ "full_context": "NSI",   "context": ["NSI"],    "c_NSI": "Slice1",    "vi_NSI_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"2NSI_AMFMeanRegNbr"}}
+{ "full_context": "NSI",   "context": ["NSI"],    "c_NSI": "Slice2",    "vi_NSI_AMFMeanRegNbr": 250}
+{"index":{"_index":"soa","_id":"1NSI_Site_AMFMeanRegNbr"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "BC",    "c_NSI": "Slice1",    "vi_NSI_Site_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"2NSI_Site_AMFMeanRegNbr"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "BC",    "c_NSI": "Slice2",    "vi_NSI_Site_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"3NSI_Site_AMFMeanRegNbr"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "ON",    "c_NSI": "Slice2",    "vi_NSI_Site_AMFMeanRegNbr": 220}
+{"index":{"_index":"soa","_id":"1Site_SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "1:1",    "vi_Site_SNSSAI_AMFMeanRegNbr": 10}
+{"index":{"_index":"soa","_id":"2Site_SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "1:2",    "vi_Site_SNSSAI_AMFMeanRegNbr": 20}
+{"index":{"_index":"soa","_id":"2Site_SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "2:1",    "vi_Site_SNSSAI_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"3Site_SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "ON",    "c_SNSSAI": "2:1",    "vi_Site_SNSSAI_AMFMeanRegNbr": 100}
+{"index":{"_index":"soa","_id":"4Site_SNSSAI_AMFMeanRegNbr"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "ON",    "c_SNSSAI": "2:2",    "vi_Site_SNSSAI_AMFMeanRegNbr": 120}
+{"index":{"_index":"soa","_id":"1NF_NSI_AMFMeanRegNbr"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice1",    "c_NF": "AMF_BC",    "vi_NF_NSI_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"2NF_NSI_AMFMeanRegNbr"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice2",    "c_NF": "AMF_BC",    "vi_NF_NSI_AMFMeanRegNbr": 30}
+{"index":{"_index":"soa","_id":"3NF_NSI_AMFMeanRegNbr"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice2",    "c_NF": "AMF_ON1",    "vi_NF_NSI_AMFMeanRegNbr": 90}
+{"index":{"_index":"soa","_id":"4NF_NSI_AMFMeanRegNbr"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice1",    "c_NF": "AMF_ON2",    "vi_NF_NSI_AMFMeanRegNbr": 130}
+{"index":{"_index":"soa","_id":"1NF_AMFMeanRegNbr"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_BC",    "vi_NF_AMFMeanRegNbr": 60}
+{"index":{"_index":"soa","_id":"2NF_AMFMeanRegNbr"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_ON1",    "vi_NF_AMFMeanRegNbr": 90}
+{"index":{"_index":"soa","_id":"3NF_AMFMeanRegNbr"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_ON2",    "vi_NF_AMFMeanRegNbr": 130}
+{"index":{"_index":"soa","_id":"1NF_Site_AMFMeanRegNbr"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "BC",    "c_NF": "AMF_BC",    "vi_NF_Site_AMFMeanRegNbr": 60}
+{"index":{"_index":"soa","_id":"2NF_Site_AMFMeanRegNbr"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "ON",    "c_NF": "AMF_ON1",    "vi_NF_Site_AMFMeanRegNbr": 90}
+{"index":{"_index":"soa","_id":"3NF_Site_AMFMeanRegNbr"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "ON",    "c_NF": "AMF_ON2",    "vi_NF_Site_AMFMeanRegNbr": 130}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr2@NF:AMF_BC::SNSSAI:1:1::"}}
+{ "full_context": "NF_SNSSAI", "context": [ "SNSSAI", "NF" ], "c_SNSSAI": "1:1", "c_NF": "AMF_BC", "vi_NF_SNSSAI_AMFMeanRegNbr2": 10}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr2@NF:AMF_BC::SNSSAI:1:2::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "1:2",    "c_NF": "AMF_BC",    "vi_NF_SNSSAI_AMFMeanRegNbr2": 20}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr2@NF:AMF_ON2::SNSSAI:2:1::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:1",    "c_NF": "AMF_ON2",    "vi_NF_SNSSAI_AMFMeanRegNbr2": 60}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr2@NF:AMF_ON2::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON2",    "vi_NF_SNSSAI_AMFMeanRegNbr2": 70}
+{"index":{"_index":"soa","_id":"1SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "SNSSAI",  "context": ["SNSSAI"],    "c_SNSSAI": "1:1",    "vi_SNSSAI_AMFMeanRegNbr2": 10}
+{"index":{"_index":"soa","_id":"2SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "1:2",    "vi_SNSSAI_AMFMeanRegNbr2": 20}
+{"index":{"_index":"soa","_id":"3SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "2:1",    "vi_SNSSAI_AMFMeanRegNbr2": 150}
+{"index":{"_index":"soa","_id":"4SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "2:2",    "vi_SNSSAI_AMFMeanRegNbr2": 120}
+{"index":{"_index":"soa","_id":"1Site_AMFMeanRegNbr2"}}
+{ "full_context": "Site",    "context": ["Site"],    "c_Site": "BC",    "vi_Site_AMFMeanRegNbr2": 60}
+{"index":{"_index":"soa","_id":"2Site_AMFMeanRegNbr2"}}
+{ "full_context": "Site",   "context": ["Site"],    "c_Site": "ON",    "vi_Site_AMFMeanRegNbr2": 220}
+{"index":{"_index":"soa","_id":"1NSI_AMFMeanRegNbr2"}}
+{ "full_context": "NSI",   "context": ["NSI"],    "c_NSI": "Slice1",    "vi_NSI_AMFMeanRegNbr2": 30}
+{"index":{"_index":"soa","_id":"2NSI_AMFMeanRegNbr2"}}
+{ "full_context": "NSI",   "context": ["NSI"],    "c_NSI": "Slice2",    "vi_NSI_AMFMeanRegNbr2": 250}
+{"index":{"_index":"soa","_id":"1NSI_Site_AMFMeanRegNbr2"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "BC",    "c_NSI": "Slice1",    "vi_NSI_Site_AMFMeanRegNbr2": 30}
+{"index":{"_index":"soa","_id":"2NSI_Site_AMFMeanRegNbr2"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "BC",    "c_NSI": "Slice2",    "vi_NSI_Site_AMFMeanRegNbr2": 30}
+{"index":{"_index":"soa","_id":"3NSI_Site_AMFMeanRegNbr2"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "ON",    "c_NSI": "Slice2",    "vi_NSI_Site_AMFMeanRegNbr2": 220}
+{"index":{"_index":"soa","_id":"1Site_SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "1:1",    "vi_Site_SNSSAI_AMFMeanRegNbr2": 10}
+{"index":{"_index":"soa","_id":"2Site_SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "1:2",    "vi_Site_SNSSAI_AMFMeanRegNbr2": 20}
+{"index":{"_index":"soa","_id":"3Site_SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "2:1",    "vi_Site_SNSSAI_AMFMeanRegNbr2": 30}
+{"index":{"_index":"soa","_id":"4Site_SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "ON",    "c_SNSSAI": "2:1",    "vi_Site_SNSSAI_AMFMeanRegNbr2": 100}
+{"index":{"_index":"soa","_id":"5Site_SNSSAI_AMFMeanRegNbr2"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "ON",    "c_SNSSAI": "2:2",    "vi_Site_SNSSAI_AMFMeanRegNbr2": 120}
+{"index":{"_index":"soa","_id":"1NF_NSI_AMFMeanRegNbr2"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice1",    "c_NF": "AMF_BC",    "vi_NF_NSI_AMFMeanRegNbr2": 30}
+{"index":{"_index":"soa","_id":"2NF_NSI_AMFMeanRegNbr2"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice2",    "c_NF": "AMF_BC",    "vi_NF_NSI_AMFMeanRegNbr2": 30}
+{"index":{"_index":"soa","_id":"3NF_NSI_AMFMeanRegNbr2"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice2",    "c_NF": "AMF_ON1",    "vi_NF_NSI_AMFMeanRegNbr2": 90}
+{"index":{"_index":"soa","_id":"4NF_NSI_AMFMeanRegNbr2"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice1",    "c_NF": "AMF_ON2",    "vi_NF_NSI_AMFMeanRegNbr2": 130}
+{"index":{"_index":"soa","_id":"1NF_AMFMeanRegNbr2"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_BC",    "vi_NF_AMFMeanRegNbr2": 60}
+{"index":{"_index":"soa","_id":"2NF_AMFMeanRegNbr2"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_ON1",    "vi_NF_AMFMeanRegNbr2": 90}
+{"index":{"_index":"soa","_id":"3NF_AMFMeanRegNbr2"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_ON2",    "vi_NF_AMFMeanRegNbr2": 130}
+{"index":{"_index":"soa","_id":"1NF_Site_AMFMeanRegNbr2"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "BC",    "c_NF": "AMF_BC",    "vi_NF_Site_AMFMeanRegNbr2": 60}
+{"index":{"_index":"soa","_id":"2NF_Site_AMFMeanRegNbr2"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "ON",    "c_NF": "AMF_ON1",    "vi_NF_Site_AMFMeanRegNbr2": 90}
+{"index":{"_index":"soa","_id":"3NF_Site_AMFMeanRegNbr2"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "ON",    "c_NF": "AMF_ON2",    "vi_NF_Site_AMFMeanRegNbr2": 130}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr3@NF:AMF_BC::SNSSAI:1:1::"}}
+{ "full_context": "NF_SNSSAI", "context": [ "SNSSAI", "NF" ], "c_SNSSAI": "1:1", "c_NF": "AMF_BC", "vi_NF_SNSSAI_AMFMeanRegNbr3": 10}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr3@NF:AMF_BC::SNSSAI:1:2::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "1:2",    "c_NF": "AMF_BC",    "vi_NF_SNSSAI_AMFMeanRegNbr3": 20}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr3@NF:AMF_BC::SNSSAI:2:1::"}}
+{ "full_context": "NF_SNSSAI",     "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:1",    "c_NF": "AMF_BC",    "vi_NF_SNSSAI_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr3@NF:AMF_ON1::SNSSAI:2:1::"}}
+{ "full_context": "NF_SNSSAI",    "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:1",    "c_NF": "AMF_ON1",    "vi_NF_SNSSAI_AMFMeanRegNbr3": 40}
+{"index":{"_index":"soa","_id":"1SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "SNSSAI",  "context": ["SNSSAI"],    "c_SNSSAI": "1:1",    "vi_SNSSAI_AMFMeanRegNbr3": 10}
+{"index":{"_index":"soa","_id":"2SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "1:2",    "vi_SNSSAI_AMFMeanRegNbr3": 20}
+{"index":{"_index":"soa","_id":"3SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "2:1",    "vi_SNSSAI_AMFMeanRegNbr3": 150}
+{"index":{"_index":"soa","_id":"4SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "SNSSAI",    "context": ["SNSSAI"],    "c_SNSSAI": "2:2",    "vi_SNSSAI_AMFMeanRegNbr3": 120}
+{"index":{"_index":"soa","_id":"1Site_AMFMeanRegNbr3"}}
+{ "full_context": "Site",    "context": ["Site"],    "c_Site": "BC",    "vi_Site_AMFMeanRegNbr3": 60}
+{"index":{"_index":"soa","_id":"2Site_AMFMeanRegNbr3"}}
+{ "full_context": "Site",   "context": ["Site"],    "c_Site": "ON",    "vi_Site_AMFMeanRegNbr3": 220}
+{"index":{"_index":"soa","_id":"1NSI_AMFMeanRegNbr3"}}
+{ "full_context": "NSI",   "context": ["NSI"],    "c_NSI": "Slice1",    "vi_NSI_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"2NSI_AMFMeanRegNbr3"}}
+{ "full_context": "NSI",   "context": ["NSI"],    "c_NSI": "Slice2",    "vi_NSI_AMFMeanRegNbr3": 250}
+{"index":{"_index":"soa","_id":"1NSI_Site_AMFMeanRegNbr3"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "BC",    "c_NSI": "Slice1",    "vi_NSI_Site_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"2NSI_Site_AMFMeanRegNbr3"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "BC",    "c_NSI": "Slice2",    "vi_NSI_Site_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"3NSI_Site_AMFMeanRegNbr3"}}
+{ "full_context": "NSI_Site",   "context": [        "Site",        "NSI"    ],    "c_Site": "ON",    "c_NSI": "Slice2",    "vi_NSI_Site_AMFMeanRegNbr3": 220}
+{"index":{"_index":"soa","_id":"1Site_SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "1:1",    "vi_Site_SNSSAI_AMFMeanRegNbr3": 10}
+{"index":{"_index":"soa","_id":"2Site_SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "1:2",    "vi_Site_SNSSAI_AMFMeanRegNbr3": 20}
+{"index":{"_index":"soa","_id":"3Site_SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "BC",    "c_SNSSAI": "2:1",    "vi_Site_SNSSAI_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"4Site_SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "ON",    "c_SNSSAI": "2:1",    "vi_Site_SNSSAI_AMFMeanRegNbr3": 100}
+{"index":{"_index":"soa","_id":"5Site_SNSSAI_AMFMeanRegNbr3"}}
+{ "full_context": "Site_SNSSAI",   "context": [        "Site",        "SNSSAI"    ],    "c_Site": "ON",    "c_SNSSAI": "2:2",    "vi_Site_SNSSAI_AMFMeanRegNbr3": 120}
+{"index":{"_index":"soa","_id":"1NF_NSI_AMFMeanRegNbr3"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice1",    "c_NF": "AMF_BC",    "vi_NF_NSI_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"2NF_NSI_AMFMeanRegNbr3"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice2",    "c_NF": "AMF_BC",    "vi_NF_NSI_AMFMeanRegNbr3": 30}
+{"index":{"_index":"soa","_id":"3NF_NSI_AMFMeanRegNbr3"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice2",    "c_NF": "AMF_ON1",    "vi_NF_NSI_AMFMeanRegNbr3": 90}
+{"index":{"_index":"soa","_id":"4NF_NSI_AMFMeanRegNbr3"}}
+{ "full_context": "NF_NSI",   "context": [        "NSI",        "NF"    ],    "c_NSI": "Slice1",    "c_NF": "AMF_ON2",    "vi_NF_NSI_AMFMeanRegNbr3": 130}
+{"index":{"_index":"soa","_id":"1NF_AMFMeanRegNbr3"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_BC",    "vi_NF_AMFMeanRegNbr3": 60}
+{"index":{"_index":"soa","_id":"2NF_AMFMeanRegNbr3"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_ON1",    "vi_NF_AMFMeanRegNbr3": 90}
+{"index":{"_index":"soa","_id":"3NF_AMFMeanRegNbr3"}}
+{ "full_context": "NF",   "context": [        "NF"    ],    "c_NF": "AMF_ON2",    "vi_NF_AMFMeanRegNbr3": 130}
+{"index":{"_index":"soa","_id":"1NF_Site_AMFMeanRegNbr3"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "BC",    "c_NF": "AMF_BC",    "vi_NF_Site_AMFMeanRegNbr3": 60}
+{"index":{"_index":"soa","_id":"2NF_Site_AMFMeanRegNbr3"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "ON",    "c_NF": "AMF_ON1",    "vi_NF_Site_AMFMeanRegNbr3": 90}
+{"index":{"_index":"soa","_id":"3NF_Site_AMFMeanRegNbr3"}}
+{ "full_context": "NF_Site",   "context": [        "Site",        "NF"    ],    "c_Site": "ON",    "c_NF": "AMF_ON2",    "vi_NF_Site_AMFMeanRegNbr3": 130}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON20::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON20",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON21::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON21",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON22::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON22",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON23::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON23",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON24::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON24",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON25::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON25",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON26::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON26",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON27::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON27",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON28::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON28",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON29::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON29",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON30::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON30",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON31::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON31",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON32::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON32",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON33::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON33",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON34::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON34",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON35::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON35",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON36::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON36",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON37::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON37",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON38::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON38",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON39::SNSSAI:2:2::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_SNSSAI": "2:2",    "c_NF": "AMF_ON39",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON40::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_NF": "AMF_ON40",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+{"index":{"_index":"soa","_id":"AMFMeanRegNbr4@NF:AMF_ON41::"}}
+{ "full_context": "NF_SNSSAI",   "context": [        "SNSSAI",        "NF"    ],    "c_NF": "AMF_ON41",    "vi_NF_SNSSAI_AMFMeanRegNbr4": 70}
+'

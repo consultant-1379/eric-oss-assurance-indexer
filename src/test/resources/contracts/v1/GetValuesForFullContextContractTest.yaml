@@ -1,0 +1,44 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+name: Get Values for Full Context Contract Test
+description: Get all the ValueContextSpec for the index documents in a SearchEngineIndex given a specific FullContext.
+request:
+  method: GET
+  urlPath: /v1/indexer-info/spec/values-for-fullcontext
+  queryParameters:
+    searchEngineIndexName: assurance-searchEngineIndexName
+    fullContextName: Context4_c1
+response:
+  status: 200
+  headers:
+    Content-Type: application/json
+  body:
+    value:
+      - name: valueFieldX-name
+        displayName: Context Field A
+        unit: errors/minute
+        type: float
+        valueContextDocumentName: value_context
+        valueDocumentName: vd_ContextA_ContextB_valueFieldX-name
+        description: valueFieldX Description
+      - name: vi
+        displayName: null
+        unit: null
+        type: integer
+        valueContextDocumentName: value_context
+        valueDocumentName: vi_Context1_c1_vi
+        description: value description for vi

@@ -1,0 +1,272 @@
+#
+# COPYRIGHT Ericsson 2021
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{- $g := fromJson (include "eric-oss-assurance-indexer.global" .) -}}
+{{- define "eric-oss-assurance-indexer.k8sionamelabelkey" }}
+  app.kubernetes.io/name: {{ include "eric-oss-assurance-indexer.name" . | quote }}
+{{- end }}
+{{- define "eric-oss-assurance-indexer.k8sioinstancelabelkey" }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- define "eric-oss-assurance-indexer.k8sioversionlabelkey" }}
+  app.kubernetes.io/version: {{ include "eric-oss-assurance-indexer.version" . | quote }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eric-oss-assurance-indexer.fullname" . }}
+  labels:
+  {{- include "eric-oss-assurance-indexer.labels" . | nindent 4 }}
+  annotations:
+  {{- $prominfo := include "eric-oss-assurance-indexer.prometheus" . | fromYaml -}}
+  {{- $annotates := include "eric-oss-assurance-indexer.annotations" . | fromYaml -}}
+  {{- include "eric-oss-assurance-indexer.mergeAnnotations" (dict "location" .Template.Name "sources" (list $prominfo $annotates)) | indent 4 }}
+spec:
+{{- if not .Values.autoScaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "eric-oss-assurance-indexer.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.updateStrategy.type | quote }}
+    {{- if and (eq .Values.updateStrategy.type "RollingUpdate") .Values.updateStrategy.rollingUpdate }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- $labels := include "eric-oss-assurance-indexer.labels" . | fromYaml -}}
+        {{- $k8sioname := include "eric-oss-assurance-indexer.k8sionamelabelkey" . | fromYaml -}}
+        {{- $k8sioinstance := include "eric-oss-assurance-indexer.k8sioinstancelabelkey" . | fromYaml -}}
+        {{- $k8sioversion := include "eric-oss-assurance-indexer.k8sioversionlabelkey" . | fromYaml -}}
+        {{- include "eric-oss-assurance-indexer.mergeLabels" (dict "location" .Template.Name "sources" (list $labels $k8sioname $k8sioinstance $k8sioversion)) | indent 8 }}
+      annotations:
+        {{- $annotations := include "eric-oss-assurance-indexer.annotations" . | fromYaml -}}
+        {{- $promdata := include "eric-oss-assurance-indexer.prometheus" . | fromYaml -}}
+        {{- $prodinfo := include "eric-oss-assurance-indexer.product-info" . | fromYaml -}}
+        {{- $configannotations := include "eric-oss-assurance-indexer.config-annotations" . | fromYaml -}}
+        {{- $containerannotations := include "eric-oss-assurance-indexer.container-annotations" . | fromYaml -}}
+        {{- include "eric-oss-assurance-indexer.mergeAnnotations" (dict "location" .Template.Name "sources" (list $annotations $promdata $prodinfo $configannotations $containerannotations)) | indent 8 }}
+    spec:
+      {{- if include "eric-oss-assurance-indexer.pullSecret" . }}
+      imagePullSecrets:
+        - name: {{ include "eric-oss-assurance-indexer.pullSecret" . | quote}}
+      {{- end }}
+      serviceAccountName: {{ template "eric-oss-assurance-indexer.fullname" . }}
+      securityContext:
+        fsGroup: {{ include "eric-oss-assurance-indexer.fsGroup.coordinated" . }}
+        {{- include "eric-oss-assurance-indexer.seccomp-profile" . | indent 8 }}
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            defaultMode: 493
+            name: {{ include "eric-oss-assurance-indexer.name" . }}-configmap
+        - name: server-cert-vol
+          secret:
+           optional: true
+           secretName: {{ include "eric-oss-assurance-indexer.name" . }}-server-cert-secret
+        - name: sip-tls-root-cert-vol
+          secret:
+           optional: true
+           secretName: eric-sec-sip-tls-trusted-root-cert
+        - name: eric-log-transformer
+          secret:
+            optional: true
+            secretName: {{ include "eric-oss-assurance-indexer.name" . }}-log-transformer-client-cert
+        - name: pmca
+          secret:
+            optional: true
+            secretName: eric-pm-server-ca
+        - name: search-engine
+          secret:
+            optional: true
+            secretName: {{ include "eric-oss-assurance-indexer.name" . }}-search-engine-client-cert-secret
+        - name: kafka
+          secret:
+            optional: true
+            secretName: {{ include "eric-oss-assurance-indexer.fullname" . }}-kafka--client-cert-secret
+
+      containers:
+        - name: eric-oss-assurance-indexer
+          image: {{ template "eric-oss-assurance-indexer.mainImagePath" . }}
+          imagePullPolicy: {{ template "eric-oss-assurance-indexer.registryImagePullPolicy" . }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
+            - name: config-volume
+              mountPath: /config
+            - name: server-cert-vol # TODO generate helper for adding certs dynamically, instead of CertificateId.enum
+              mountPath: /var/run/secrets/certs/server/keystore
+              readOnly: true
+            - name: sip-tls-root-cert-vol
+              mountPath: /var/run/secrets/certs/root/truststore
+              readOnly: true
+            - name: eric-log-transformer
+              mountPath: /var/run/secrets/certs/log/keystore
+              readOnly: true
+            - name: pmca
+              mountPath: /var/run/secrets/certs/pmca/truststore
+              readOnly: true
+            - name: search-engine
+              mountPath: /var/run/secrets/certs/search_engine/keystore
+              readOnly: true
+            - name: kafka
+              mountPath: /var/run/secrets/certs/kafka/keystore
+              readOnly: true
+          ports:
+            {{- if  (eq (include "eric-oss-assurance-indexer.global-security-tls-enabled" .) "true") }}
+           - name: https
+            {{- else }}
+           - name: http
+            {{- end }}
+             containerPort: {{ include "eric-oss-assurance-indexer.service-port" . }}
+             protocol: TCP
+          livenessProbe:
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "initialDelaySeconds") }}
+            {{ print "initialDelaySeconds: " (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "initialDelaySeconds") }}
+          {{- end }}
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "failureThreshold") }}
+            {{ print "failureThreshold: " (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "failureThreshold") }}
+          {{- end }}
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "periodSeconds") }}
+            {{ print "periodSeconds: " (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "periodSeconds") }}
+          {{- end }}
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "timeoutSeconds") }}
+            {{ print "timeoutSeconds: " (index .Values "probes" "eric-oss-assurance-indexer" "livenessProbe" "timeoutSeconds") }}
+          {{- end }}
+          {{- include "eric-oss-assurance-indexer.probe-command" . | indent 8 }}  
+          readinessProbe:
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "initialDelaySeconds") }}
+            {{ print "initialDelaySeconds: " (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "initialDelaySeconds") }}
+          {{- end }}
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "failureThreshold") }}
+            {{ print "failureThreshold: " (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "failureThreshold") }}
+          {{- end }}
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "periodSeconds") }}
+            {{ print "periodSeconds: " (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "periodSeconds") }}
+          {{- end }}
+          {{- if (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "timeoutSeconds") }}
+            {{ print "timeoutSeconds: " (index .Values "probes" "eric-oss-assurance-indexer" "readinessProbe" "timeoutSeconds") }}
+          {{- end }}
+          {{- include "eric-oss-assurance-indexer.probe-command" . | indent 8 }}
+          env:
+          - name: JAVA_OPTS
+            value: {{ include "eric-oss-assurance-indexer.jvmHeapSettings" . }}
+          - name: TZ
+            value: {{ template "eric-oss-assurance-indexer.timezone" . }}
+          - name: SERVICE_ID
+            value: {{ .Chart.Name }}
+          {{- include "eric-oss-assurance-indexer.kafka" . | nindent 10 -}}
+          {{- include "eric-oss-assurance-indexer.open-search" . | nindent 10 -}}
+          {{- include "eric-oss-assurance-indexer.loggingEnv" . | indent 6 -}}
+          {{- if  (eq (include "eric-oss-assurance-indexer.global-security-tls-enabled" .) "true") }}
+          - name: HTTPS_PORT
+            value: {{ .Values.service.tls.port | quote }}
+          - name: TLS_ENABLED
+            value: {{ include "eric-oss-assurance-indexer.global-security-tls-enabled" . | quote }}
+          - name: TLS_READ_ROOT_PATH
+            value: /var/run/secrets/certs
+          - name: TLS_WRITE_ROOT_PATH
+            value: /tmp
+          - name: KEYSTORE_REL_DIR
+            value: keystore
+          - name: TRUSTSTORE_REL_DIR
+            value: truststore
+          - name: GRACEFUL_SHUTDOWN_TIMEOUT
+            value: {{ .Values.terminationGracePeriodSeconds | quote }}
+           {{- end }}
+          resources:
+            requests:
+            {{- if (index .Values "resources" "eric-oss-assurance-indexer" "requests" "cpu") }}
+              cpu: {{ (index .Values "resources" "eric-oss-assurance-indexer" "requests" "cpu" | quote) }}
+            {{- end }}
+            {{- if (index .Values "resources" "eric-oss-assurance-indexer" "requests" "memory") }}
+              memory: {{ (index .Values "resources" "eric-oss-assurance-indexer" "requests" "memory" | quote) }}
+            {{- end }}
+            {{- if (index .Values "resources" "eric-oss-assurance-indexer" "requests" "ephemeral-storage") }}
+            {{ println "  ephemeral-storage:" (index .Values "resources" "eric-oss-assurance-indexer" "requests" "ephemeral-storage" | quote) }}
+            {{- end }}
+            limits:
+            {{- if (index .Values "resources" "eric-oss-assurance-indexer" "limits" "cpu") }}
+              cpu: {{ (index .Values "resources" "eric-oss-assurance-indexer" "limits" "cpu" | quote) }}
+            {{- end }}
+            {{- if (index .Values "resources" "eric-oss-assurance-indexer" "limits" "memory") }}
+              memory: {{ (index .Values "resources" "eric-oss-assurance-indexer" "limits" "memory" | quote) }}
+            {{- end }}
+            {{- if (index .Values "resources" "eric-oss-assurance-indexer" "limits" "ephemeral-storage") }}
+            {{ println "  ephemeral-storage:" (index .Values "resources" "eric-oss-assurance-indexer" "limits" "ephemeral-storage" | quote) }}
+            {{- end }}
+
+      {{- if (or .Values.nodeSelector $g.nodeSelector) }}
+      nodeSelector: {{- include "eric-oss-assurance-indexer.nodeSelector" . | indent 8 }}
+      {{- end }}
+
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ include "eric-oss-assurance-indexer.terminationGracePeriodSeconds" . }}
+      {{- end }}
+
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- include "eric-oss-assurance-indexer.tolerations" . | nindent 6 }}
+      {{- end }}
+
+      {{- if (index .Values "podPriority" "eric-oss-assurance-indexer" "priorityClassName") }}
+      priorityClassName: {{ (index .Values "podPriority" "eric-oss-assurance-indexer" "priorityClassName") }}
+      {{- end }}
+
+      {{- with .Values.topologySpreadConstraints.deployment }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- if eq .Values.affinity.podAntiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ include "eric-oss-assurance-indexer.name" . }}
+            topologyKey: {{ .Values.affinity.topologyKey }}
+      {{- else if eq .Values.affinity.podAntiAffinity  "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ include "eric-oss-assurance-indexer.name" . }}
+              topologyKey: {{ .Values.affinity.topologyKey }}
+      {{- end }}

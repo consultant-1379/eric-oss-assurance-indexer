@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "name": "name",
+  "namespace": "namespace",
+  "fields": [
+    {"name": "c", "type": "string"},
+    {"name": "v", "type": "double"},
+    {"name": "i", "type": "string"}
+  ]
+}

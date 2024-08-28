@@ -1,0 +1,34 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+name: Get Values for Full Context Missing Search Engine Contract Test
+description: Negative contract test that attempts to use a search engine index that does not exist to get values for a full context
+request:
+  method: GET
+  urlPath: /v1/indexer-info/spec/values-for-fullcontext
+  queryParameters:
+    searchEngineIndexName: invalidSearchEngineIndexName
+    fullContextName: Context4_c1
+response:
+  status: 404
+  headers:
+    Content-Type: application/json
+  body:
+    type: about:blank
+    title: Not Found
+    status: 404
+    detail: An item with the search engine index 'invalidSearchEngineIndexName', was not found.
+    instance: null

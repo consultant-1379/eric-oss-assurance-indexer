@@ -1,0 +1,34 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+zapConfig:
+  baseUrl: "http://eric-oss-assurance-indexer:8080"
+  scanType: "api"
+  config_dir: "zap/config"
+  globalConfig:
+  endpoints:
+    - name: "indexer"
+      url: "/v1/indexer-info/indexer"
+  report:
+    dir: "%{VA_REPORT_ZAP_FOLDER}"
+    format:
+      - html
+      - json
+      - md
+      - xml
+  properties:
+    zap_container_port: 4040
+  timeout: 5

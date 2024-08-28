@@ -1,0 +1,21 @@
+documents:
+  - name: user-guide
+    files:
+      - ../../../../doc/User_Guide/user_guide.md
+      - ../../../../doc/User_Guide/AIS_architecture_overview.png
+      - ../../../../doc/User_Guide/AIS_deployment_overview.png
+  - name: developers-guide
+    files:
+      - ../../../../doc/Application_Developers_Guide/Application_Developers_Guide.adoc
+  - name: deployment-guide
+    files:
+      - ../../../../doc/Service_Deployment/Service_Deployment.adoc
+  - name: troubleshooting-guide
+    files:
+      - ../../../../doc/Troubleshooting_Guide/Troubleshooting_Guide.adoc
+  - name: read-me
+    files:
+      - ../../../../README.md
+  - name: contributing
+    files:
+      - ../../../../CONTRIBUTING.md

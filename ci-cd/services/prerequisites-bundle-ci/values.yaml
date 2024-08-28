@@ -1,0 +1,23 @@
+global:
+  pullSecret: armdocker-login-secret
+  security:
+    tls:
+      enabled: false
+eric-data-message-bus-kf:
+  configurationOverrides:
+    "auto.create.topics.enable": "true"
+kafka:
+  image:
+    pullPolicy: IfNotPresent
+    url: armdocker.rnd.ericsson.se
+    repoPath: /proj-adp-message-bus-kf-drop/
+    name: eric-data-message-bus-kf
+    tag: 2.15.0-52
+  topicCreate:
+    enabled: true
+    bootstrapServer: eric-data-message-bus-kf:9092
+    topics:
+      - name: network-input-topic
+        partition: 1
+      - name: topology-change-event-topic
+        partition: 1

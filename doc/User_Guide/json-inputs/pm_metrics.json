@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "serviceHelmChartName": "eric-oss-assurance-indexer",
+    "usedSchemaVersion": "2.0",
+    "fileVersion": "1.0.0",
+    "dateEdited": "2023-08-10"
+  },
+  "metrics": [
+    {
+      "pmMetric": "index_records_received_total",
+      "metricDescription": "Total number of records received",
+      "metricType": "Counter",
+      "metricStatus": "beta",
+      "metricCategory": "USE",
+      "metricLabel": ["ais_custom_metric", "podname"]
+    },
+    {
+      "pmMetric": "index_records_processed_total",
+      "metricDescription": "Total number of records processed and put into the Search Engine",
+      "metricType": "Counter",
+      "metricStatus": "beta",
+      "metricCategory": "USE",
+      "metricLabel": ["ais_custom_metric", "podname"]
+    },
+    {
+      "pmMetric": "app_startup_time_seconds",
+      "metricDescription": "Number of seconds for the service to start after the spring-boot gave the ApplicationReadyEvent.",
+      "metricType": "Gauge",
+      "metricStatus": "beta",
+      "metricCategory": "RED"
+    }
+  ]
+}

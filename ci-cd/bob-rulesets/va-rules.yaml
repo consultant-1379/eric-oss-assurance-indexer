@@ -1,0 +1,301 @@
+modelVersion: 2.0
+
+
+description: "VA Scan Rules"
+
+
+import:
+  images: docker-images.yaml
+  common: common-rules.yaml
+  docker: docker-rules.yaml
+  helm: helm-rules.yaml
+  project: ../../project-properties.yaml
+
+
+properties:
+  - registry: ${env.DOCKER_REGISTRY}
+  - registry-project: ${env.DOCKER_PROJECT}
+
+  - image-name: ${docker.image-name}
+  - image-to-scan: ${docker.image-name-full}:${var.common.version}
+
+  - version: ${var.common.version}
+  - product-number: ${common.version}
+  - k8s-namespace: ${env.NAMESPACE}
+
+  - helm-chart: ${helm.helm-repository}/${project.helm-chart-name}/${project.helm-chart-name}-${var.common.version}.tgz
+  - ci-build-directory-va: ${common.ci-build-directory}/va
+  - ci-build-directory-va-reports: ${ci-build-directory-va}/reports
+  - ci-build-directory-va-config: ${ci-build-directory-va}/config
+  - ci-artifacts-directory-va: ${common.ci-artifacts-directory}/va
+
+  - config-file: ""
+  - va-report-extra-args: " "
+  - va-config-folder: ${env.PWD}/ci-cd/config/va
+
+  - product-node-name: ""
+  - product-name: ""
+  - product-contact: ""
+
+  - nmap-extra-args: " "
+
+
+var:
+  - va-product-node-name
+  - va-product-name
+  - va-product-contact
+  - trivy-scan-name
+  - va-report-flags
+  - va-report-exit-status
+
+
+env:
+  - USER(default=jenkins)
+  - PWD
+  - HOME
+  - KUBECONFIG (default=${env.HOME}/.kube/config)
+  - K8S_NAMESPACE (default=${env.NAMESPACE})
+  - NAMESPACE (default=${env.NAMESPACE})
+  - XRAY_USER (default=${common.arm-user})
+  - XRAY_TOKEN (default=${common.arm-token})
+  - ARM_USER (default=${env.USER})
+  - ARM_TOKEN_KI
+  - ARM_TOKEN
+  - HELM_TOKEN (default=${env.ARM_TOKEN})
+  - HELM_USER (default=${env.ARM_USER})
+  - DOCKER_REGISTRY (default=armdocker.rnd.ericsson.se)
+  - DOCKER_PROJECT
+
+
+rules:
+  va-init:
+    - task: create-temporary-va-config-folder
+      cmd:
+        - mkdir -p ${ci-build-directory-va-config}
+        - mkdir -p ${ci-build-directory-va-reports}
+        - mkdir -p ${ci-artifacts-directory-va}
+        - cp -r ${va-config-folder}/. ${ci-build-directory-va-config}
+    - task: init-vars
+      cmd:
+        - echo "${product-node-name}" > .bob/var.va-product-node-name
+        - echo "${product-name}" > .bob/var.va-product-name
+        - echo "${product-contact}" > .bob/var.va-product-contact
+
+
+  va-tools-scan:
+    - rule: anchore-grype-scan
+    
+    - rule: kubeaudit-scan
+    - rule: kubebench-scan
+    - rule: kubehunter-scan
+    - rule: kubesec-scan
+    - rule: trivy-scan
+#    - rule: nmap-scan
+
+
+  anchore-grype-scan:
+    - task: run-anchore-grype-scan
+      docker-image: images.va-image-scanning-grype
+      docker-in-docker: socket
+      cmd: grype_scan
+        --image "${image-to-scan}"
+        --report-dir "${ci-build-directory-va-reports}/anchore"
+
+
+  
+
+
+  kubeaudit-scan:
+    - task: run-kubeaudit-scan
+      docker-image: images.va-scan-kubeaudit
+      docker-in-docker: socket
+      docker-flags:
+        - --env "ARM_SELI_USER=${env.ARM_USER}"
+        - --env "ARM_SELI_TOKEN=${env.ARM_TOKEN}"
+        - --workdir "/opt/va-scan-kubeaudit/"
+        - --volume "${env.PWD}/${ci-build-directory-va-config}:/opt/va-scan-kubeaudit/conf"
+        - --volume "${env.PWD}/${ci-build-directory-va-reports}/kubeaudit:/tmp/reports"
+      cmd: --armlinks-set "${helm-chart}"
+
+
+  kubebench-scan:
+    - task: run-kubebench-scan
+      docker-in-docker: socket
+      docker-image: images.va-scan-kubebench
+      docker-flags:
+        - --workdir "/opt/kubebench/"
+        - --env "USER=jenkins"
+        - --env "KUBECONFIG=/tmp/admin.conf"
+        - --env "K8S_NAMESPACE=${k8s-namespace}"
+        - --env "NAMESPACE=${k8s-namespace}"
+        - --volume "${env.KUBECONFIG}:/tmp/admin.conf:ro"
+        - --volume "${env.PWD}/${ci-build-directory-va-config}:/opt/kubebench/conf"
+        - --volume "${env.PWD}/${ci-build-directory-va-reports}/kubebench/:/tmp/reports"
+      cmd: " "
+
+
+  kubesec-scan:
+    - rule: replace-config-file-vars
+      properties:
+        - config-file: kubesec_config.yaml
+    - task: run-kubesec-scan
+      docker-image: images.va-scan-kubesec
+      docker-in-docker: socket
+      docker-flags:
+        - --env "ARM_SELI_USER=${env.ARM_USER}"
+        - --env "ARM_SELI_TOKEN=${env.ARM_TOKEN}"
+        - --workdir "/opt/va-scan-kubesec/"
+        - --volume "${env.PWD}/${ci-build-directory-va-config}:/opt/va-scan-kubesec/conf"
+        - --volume "${env.PWD}/${ci-build-directory-va-reports}/kubesec:/tmp/reports"
+      cmd: " "
+
+
+  kubehunter-scan:
+    - task: create-report-dir
+      cmd: mkdir -p kubehunter
+    - task: run-kubehunter-scan
+      docker-image: images.va-scan-kubehunter
+      docker-flags:
+        - --workdir "/opt/kubehunter/"
+        - --env "KUBECONFIG=/tmp/admin.conf"
+        - --volume "${env.KUBECONFIG}:/tmp/admin.conf:ro"
+        - --volume "${env.PWD}/${ci-build-directory-va-config}:/opt/kubehunter/conf"
+        - --volume "${env.PWD}/${ci-build-directory-va-reports}/kubehunter:/tmp/reports"
+      cmd: " "
+
+
+  trivy-scan:
+    - task: prepare-trivy-directory
+      cmd: |
+        dir_name="${ci-build-directory-va-reports}/trivy"
+        mkdir -p "$dir_name"
+        scan_name="$(echo "${image-to-scan}" | xargs basename | sed -e "s/:/_/g")"
+        echo "$dir_name/$scan_name" > .bob/var.trivy-scan-name
+    - task: run-trivy-scan
+      docker-image: images.trivy-inline-scan
+      docker-in-docker: socket
+      cmd: --timeout 10m0s --security-checks vuln --format "json" --output "${var.trivy-scan-name}.json" "${image-to-scan}"
+
+
+  nmap-scan:
+    - rule: replace-config-file-vars
+      properties:
+        - config-file: 'nmap_config.yaml'
+        - report-dir: ${ci-build-directory-va-reports}/nmap
+    - task: run-nmap-scan
+      description:
+        Runs nmap scan. It requires an ARM SERO credential to fetch nmap helm chart
+        and currently does not support kubernetes pull secrets to pull nmap image from arm.
+        The kubernetes cluster and namespace must allow running pods as root.
+      docker-image: images.py3kubehelmbuilder
+      docker-flags:
+        - --env "KUBECONFIG=${env.KUBECONFIG}"
+        - --volume "${env.KUBECONFIG}:${env.KUBECONFIG}:ro"
+      cmd: va-scanner nmap-scan
+        --kubernetes-admin-conf="${env.KUBECONFIG}"
+        --helm-user="${env.HELM_USER}"
+        --arm-api-token="${env.ARM_TOKEN_KI}"
+        --kubernetes-namespace="${k8s-namespace}"
+        --nmap-config-file="${ci-build-directory-va-config}/nmap_config.yaml"
+        --skip-services-status-check
+        ${nmap-extra-args}
+
+
+  create-va-reports-tarball:
+    - task: create-tarball
+      cmd: |
+        cd "${ci-build-directory-va}"
+        tar -zcvf va-reports.tar.gz reports config
+    - task: copy-to-archive
+      cmd: cp "${ci-build-directory-va}/va-reports.tar.gz" "${ci-artifacts-directory-va}/"
+
+
+  xray-fetch-report:
+    - task: fetch-xray-report
+      docker-image: images.adp-release-auto
+      cmd: fetch-xray
+        --config "${ci-build-directory-va-config}/xray_report_config.yaml"
+        --debug
+        --user "${env.XRAY_USER}"
+        --apikey "${env.XRAY_TOKEN}"
+        --set project-name="${project.arm-project-name}"
+        --set artifactory-path="${project.image-project}"
+        --set image="${image-name}"
+        --set version="${version}"
+        --output "${ci-build-directory-va-reports}/xray/xray_report.json"
+
+
+  va-report:
+    - task: detect-vulnerability-report-args
+      cmd: |
+        /bin/bash -c '
+            VA_REPORT_FLAGS=();
+        
+            if [ -d "${ci-build-directory-va-reports}/anchore" ]; then
+                VA_REPORT_FLAGS+=("--anchore-reports" "${ci-build-directory-va-reports}/anchore" );
+            fi;
+            if [ -d "${ci-build-directory-va-reports}/trivy" ]; then
+                VA_REPORT_FLAGS+=("--trivy-reports" "${ci-build-directory-va-reports}/trivy" );
+            fi;
+            if [ -d "${ci-build-directory-va-reports}/nmap_report" ]; then
+                VA_REPORT_FLAGS+=("--nmap-reports" "${ci-build-directory-va-reports}/nmap_report" );
+            fi;
+            if [ -d "${ci-build-directory-va-reports}/kubeaudit" ]; then
+                VA_REPORT_FLAGS+=("--kubeaudit-reports" "${ci-build-directory-va-reports}/kubeaudit" );
+            fi;
+            if [ -d "${ci-build-directory-va-reports}/kubesec" ]; then
+                VA_REPORT_FLAGS+=("--kubesec-reports" "${ci-build-directory-va-reports}/kubesec" );
+            fi;
+            if [ -d "${ci-build-directory-va-reports}/hadolint" ]; then
+                VA_REPORT_FLAGS+=("--hadolint-reports" "${ci-build-directory-va-reports}/hadolint" );
+            fi;
+            if [ -d "${ci-build-directory-va-reports}/xray" ]; then
+                VA_REPORT_FLAGS+=("--xray-report" "${ci-build-directory-va-reports}/xray/xray_report.json" );
+            fi;
+            echo -e "${VA_REPORT_FLAGS[@]}" > .bob/var.va-report-flags;'
+
+    - task: create-bootstrap-va-report-config
+      docker-image: images.adp-release-auto
+      cmd: |
+        /bin/bash -c '
+            va-report --bootstrap \
+                      --config "${ci-build-directory-va-config}/report_config.yaml" \
+                      --output "${ci-artifacts-directory-va}/bootstrap_project_config.yaml" \
+                      --set version="${var.common.version}" \
+                      --debug \
+                      ${var.va-report-flags} ${va-report-extra-args}
+        
+                      code=$?;
+                      if [ "$code" == "1" ] || [ "$code" == "2" ] || [ "$code" == "127" ]; then
+                        exit $code;
+                      fi
+                      exit 0'
+
+    - task: create-va-report
+      docker-image: images.adp-release-auto
+      cmd: |
+        /bin/bash -c '
+            va-report --md \
+                      --config "${ci-build-directory-va-config}/report_config.yaml" \
+                      --output "${ci-artifacts-directory-va}/va_report.md" \
+                      --set version="${var.common.version}" \
+                      --debug \
+                      ${var.va-report-flags} ${va-report-extra-args}
+        
+                      echo "$?" > .bob/var.va-report-exit-status;'
+
+
+  replace-config-file-vars:
+    - task: replace
+      cmd:
+        - sed -i
+          -e 's|%{HELM_CHART}|${helm-chart}|g;'
+          -e 's|%{ARM_TOKEN}|${env.ARM_TOKEN}|g;'
+          -e 's|%{ARM_USER}|${env.ARM_USER}|g;'
+          -e 's|%{REPORT_DIR}|${ci-build-directory-va-reports}|g;'
+          '${ci-build-directory-va-config}/${config-file}'
+
+
+  conditions:
+    - task: has-unmitigated-vulnerabilities
+      cmd: '[[ ! ${var.va-report-exit-status} =~ ^(0|10)$ ]]'

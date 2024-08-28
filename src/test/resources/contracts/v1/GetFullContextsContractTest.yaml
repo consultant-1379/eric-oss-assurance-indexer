@@ -1,0 +1,50 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+name: Get Full Contexts Contract Test
+description: Queries on full_context on the documents of an index and more
+request:
+  method: GET
+  urlPath: /v1/indexer-info/spec/fullcontexts
+  queryParameters:
+    searchEngineIndexName: assurance-searchEngineIndexName
+response:
+  status: 200
+  headers:
+    Content-Type: application/json
+  body:
+    - documentName: full_context
+      fullContext:
+        - name: Context4_c1
+          context:
+            - name: c1
+              displayName: Context1_DisplayName
+              documentName: c_c1
+              description: Context1_Description
+            - name: Context4
+              displayName: Context2_DisplayName
+              documentName: c_Context4
+              description: null
+        - name: Context0_c1
+          context:
+            - name: c1
+              displayName: Context1_DisplayName
+              documentName: c_c1
+              description: Context1_Description
+            - name: Context0
+              displayName: Context2_DisplayName
+              documentName: c_Context0
+              description: null

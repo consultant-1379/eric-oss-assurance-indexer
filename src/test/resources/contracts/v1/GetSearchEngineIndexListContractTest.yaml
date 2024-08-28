@@ -1,0 +1,29 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+name: Get Search Engine Index List Contract Test
+description: Get all active indexers
+request:
+  method: GET
+  urlPath: /v1/indexer-info/search-engine-index-list
+response:
+  status: 200
+  headers:
+    Content-Type: application/json
+  body:
+    - name: assurance-soa
+      displayName: Display Name for 'SOA' index.
+      indexDescription: SOA index description

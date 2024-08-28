@@ -1,0 +1,44 @@
+{
+  "name" : "nameOfIndexerA",
+  "source" : {
+    "name" : "KafkaTopicName",
+    "type" : "pmstatsexporter"
+  },
+  "writers" : [ {
+    "inputSchema" : "writerA_schemaRegistryName",
+    "name" : "writerA_name",
+    "context" : [ {
+      "name" : "string0"
+    }, {
+      "name" : "context2",
+      "recordName": "string0"
+    } ],
+    "value" : [ {
+      "recordName" : "int0",
+      "name" : "value1",
+      "description" : "valueFieldX Description",
+      "type" : "integer"
+    }, {
+      "recordName" : "float0",
+      "name" : "value2",
+      "description" : "valueFieldX Description",
+      "type" : "float"
+    } ],
+    "info" : [ {
+      "recordName" : "string0",
+      "name" : "info1",
+      "description" : "infoFieldZ Description",
+      "type" : "string"
+    }, {
+      "recordName" : "time0",
+      "name" : "info2",
+      "description" : "infoFieldZ Description",
+      "type" : "time"
+    } ]
+  } ],
+  "target" : {
+    "displayName" : "SearchIndexA_DisplayName",
+    "name" : "index-007",
+    "indexDescription" : "SearchIndexA_Description"
+  }
+}

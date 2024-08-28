@@ -1,0 +1,2320 @@
+modelVersion: '3.0'
+dependencies:
+
+  - ID: regex_matcher:.*
+    linking: Classpath
+
+  - ID: regex_matcher:org.springframework.security:spring-.*\+6.2.3
+    bazaar:
+      prim: 170/CAX1053020
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053020
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: regex_matcher:org.springframework:spring-.*\+6.1.6
+    bazaar:
+      prim: 233/CAX1053104
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053104
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: ch.qos.logback:logback-classic+1.4.14
+    bazaar:
+      prim: 55/CAX1055342
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1055342
+      selected_licenses:
+        - EPL-1.0
+        - LGPL-2.1-only
+        - FAL1159998
+
+  - ID: ch.qos.logback:logback-core+1.4.14
+    bazaar:
+      prim: 55/CAX1055342
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1055342
+      selected_licenses:
+        - EPL-1.0
+        - LGPL-2.1-only
+        - FAL1159998
+
+  - ID: com.jcraft:jsch.agentproxy.sshagent+0.0.9
+    bazaar:
+      prim: 2/CTX1026657
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026657
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: com.jcraft:jsch.agentproxy.usocket-jna+0.0.9
+    bazaar:
+      prim: 2/CTX1026657
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026657
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: com.rackspace.eclipse.webtools.sourceediting:org.eclipse.wst.xml.xpath2.processor+2.1.100
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.micrometer:micrometer-commons+1.11.10
+    bazaar:
+      prim: 116/CTX1023759
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023759
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.micrometer:micrometer-observation+1.11.10
+    bazaar:
+      prim: 116/CTX1023759
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023759
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.micrometer:micrometer-registry-prometheus+1.11.10
+    bazaar:
+      prim: 116/CTX1023759
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023759
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: jakarta.activation:jakarta.activation-api+2.1.2
+    bazaar:
+      prim: 10/CAX1054051
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054051
+      selected_licenses:
+        - EPL-2.0
+        - EDL-1.0
+        - FAL1159998
+
+  - ID: jakarta.annotation:jakarta.annotation-api+2.1.1
+    bazaar:
+      prim: 5/CTX1027257
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1027257
+      selected_licenses:
+        - GPL-2.0-only
+        - GPL-2.0-with-classpath-exception
+        - EPL-2.0
+        - FAL1159998
+
+  - ID: jakarta.servlet:jakarta.servlet-api+6.0.0
+    bazaar:
+      prim: 5/CTX1027596
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1027596
+      selected_licenses:
+        - Apache-2.0
+        - EPL-2.0
+        - GPL-2.0-with-classpath-exception
+
+  - ID: net.javacrumbs.json-unit:json-unit-core+2.32.0
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.commons:commons-lang3+3.14.0
+    bazaar:
+      prim: 31/CAX1053253
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053253
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.groovy:groovy-json+4.0.17
+    bazaar:
+      prim: 57/CAX1054359
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054359
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.groovy:groovy-xml+4.0.17
+    bazaar:
+      prim: 57/CAX1054359
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054359
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents.core5:httpcore5+5.2.4
+    bazaar:
+      prim: 45/CAX1053847
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053847
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.logging.log4j:log4j-to-slf4j+2.20.0
+    bazaar:
+      prim: 51/CAX1053123
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053123
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-websocket+10.1.18
+    bazaar:
+      prim: 297/CAX1053029
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053029
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.hdrhistogram:HdrHistogram+2.1.12
+    bazaar:
+      prim: 7/CAX1059625
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1059625
+      selected_licenses:
+        - BSD-2-Clause
+        - CC0-1.0
+        - FAL1159998
+
+  - ID: org.latencyutils:LatencyUtils+2.0.3
+    bazaar:
+      prim: 1/CTX1023209
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1023209
+      selected_licenses:
+        - BSD-2-Clause
+        - FAL1159993
+        - FAL1159998
+
+  - ID: org.springframework.cloud:spring-cloud-contract-shade+4.0.5
+    bazaar:
+      prim: 14/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.cloud:spring-cloud-contract-spec-groovy+4.0.3
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml:classmate+1.5.1
+    bazaar:
+      prim: 10/CAX1056777
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056777
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.sun.istack:istack-commons-runtime+4.1.2
+    bazaar:
+      prim: 11/CTX1023743
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1023743
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: com.toomuchcoding.jsonassert:jsonassert+0.6.2
+    bazaar:
+      prim: 2/CTX1037047
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1037047
+      selected_licenses:
+        - MIT
+
+  - ID: com.zaxxer:HikariCP+5.0.1
+    bazaar:
+      prim: 24/CAX1058402
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1058402
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: commons-io:commons-io+2.15.0
+    bazaar:
+      prim: 25/CAX1053602
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053602
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.swagger.core.v3:swagger-annotations-jakarta+2.2.9
+    bazaar:
+      prim: 62/CAX1056692
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056692
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.swagger.core.v3:swagger-core-jakarta+2.2.9
+    bazaar:
+      prim: 62/CAX1056692
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056692
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.swagger.core.v3:swagger-models-jakarta+2.2.9
+    bazaar:
+      prim: 62/CAX1056692
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056692
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: jakarta.inject:jakarta.inject-api+2.0.1
+    bazaar:
+      prim: 6/CTX1031455
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1031455
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: jakarta.persistence:jakarta.persistence-api+3.1.0
+    bazaar:
+      prim: 7/CTX1026862
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026862
+      selected_licenses:
+        - EPL-2.0
+        - EDL-1.0
+        - FAL1159998
+
+  - ID: jakarta.transaction:jakarta.transaction-api+2.0.1
+    bazaar:
+      prim: 5/CTX1026879
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026879
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: jakarta.validation:jakarta.validation-api+3.0.2
+    bazaar:
+      prim: 4/CTX1029015
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1029015
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: jakarta.xml.bind:jakarta.xml.bind-api+4.0.1
+    bazaar:
+      prim: 23/CAX1055785
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055785
+      selected_licenses:
+        - EDL-1.0
+
+  - ID: net.minidev:accessors-smart+2.4.11
+    bazaar:
+      prim: 9/CAX1059987
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1059987
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.antlr:antlr4-runtime+4.10.1
+    bazaar:
+      prim: 2/CTX1020875
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1020875
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: org.apache.groovy:groovy+4.0.17
+    bazaar:
+      prim: 57/CAX1054359
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054359
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.groovy:groovy-nio+4.0.17
+    bazaar:
+      prim: 57/CAX1054359
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054359
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents.client5:httpclient5+5.2.3
+    bazaar:
+      prim: 29/CAX1053793
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053793
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.kafka:kafka-clients+3.4.1
+    bazaar:
+      prim: 62/CAX1058403
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1058403
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-core+10.1.18
+    bazaar:
+      prim: 297/CAX1053029
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053029
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-core+10.1.18
+    bazaar:
+      prim: 297/CAX1053029
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053029
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-websocket+10.1.18
+    bazaar:
+      prim: 297/CAX1053029
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053029
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apiguardian:apiguardian-api+1.1.2
+    bazaar:
+      prim: 4/CTX1024798
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1024798
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.aspectj:aspectjweaver+1.9.21
+    bazaar:
+      prim: 30/CAX1056512
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056512
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.eclipse.angus:angus-activation+2.0.1
+    bazaar:
+      prim: 2/CTX1037465
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1037465
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: org.glassfish.jaxb:jaxb-core+4.0.4
+    bazaar:
+      prim: 11/CAX1056356
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056356
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: org.glassfish.jaxb:txw2+4.0.4
+    bazaar:
+      prim: 20/CAX1059513
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1059513
+      selected_licenses:
+        - EDL-1.0
+
+  - ID: org.hamcrest:hamcrest+2.2
+    bazaar:
+      prim: 11/CAX1058747
+      stako: ESW3
+      subcomponent: true
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1058747
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.hamcrest:hamcrest-core+2.2
+    bazaar:
+      prim: 4/CAX1054964
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054964
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: org.junit.jupiter:junit-jupiter+5.10.2
+    bazaar:
+      prim: 49/CAX1053949
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053949
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.junit.jupiter:junit-jupiter-api+5.10.2
+    bazaar:
+      prim: 49/CAX1053949
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053949
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.junit.jupiter:junit-jupiter-engine+5.10.2
+    bazaar:
+      prim: 49/CAX1053949
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053949
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.junit.jupiter:junit-jupiter-params+5.10.2
+    bazaar:
+      prim: 49/CAX1053949
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053949
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.lz4:lz4-java+1.8.0
+    bazaar:
+      prim: 7/CTX1021471
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1021471
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.mockito:mockito-core+4.8.1
+    bazaar:
+      prim: 71/CAX1055947
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055947
+      selected_licenses:
+        - MIT
+
+  - ID: org.mockito:mockito-junit-jupiter+4.8.1
+    bazaar:
+      prim: 71/CAX1055947
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055947
+      selected_licenses:
+        - MIT
+
+  - ID: org.objenesis:objenesis+3.2
+    bazaar:
+      prim: 13/CAX1055778
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055778
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.reactivestreams:reactive-streams+1.0.4
+    bazaar:
+      prim: 5/CTX1020853
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1020853
+      selected_licenses:
+        - MIT
+
+  - ID: org.skyscreamer:jsonassert+1.5.1
+    bazaar:
+      prim: 5/CAX1057309
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1057309
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.cloud:spring-cloud-contract-stub-runner+4.0.3
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.retry:spring-retry+2.0.5
+    bazaar:
+      prim: 25/CAX1056595
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056595
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.yaml:snakeyaml+2.1
+    bazaar:
+      prim: 28/CAX1056807
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056807
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.github.luben:zstd-jni+1.5.5-6
+    bazaar:
+      prim: 24/CTX1022420
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022420
+      selected_licenses:
+        - BSD-2-Clause
+
+  - ID: com.google.code.findbugs:jsr305+3.0.2
+    bazaar:
+      prim: 6/CAX1056649
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056649
+      selected_licenses:
+        - BSD-2-Clause
+
+  - ID: com.jayway.jsonpath:json-path+2.9.0
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.jcraft:jsch.agentproxy.core+0.0.9
+    bazaar:
+      prim: 2/CTX1026657
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026657
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: com.jcraft:jsch.agentproxy.core+0.0.9
+    bazaar:
+      prim: 2/CTX1026657
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026657
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: com.vaadin.external.google:android-json+0.0.20131108.vaadin1
+    bazaar:
+      prim: 1/CTX1021235
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1021235
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: commons-beanutils:commons-beanutils+1.9.4
+    bazaar:
+      prim: 11/CAX1053285
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053285
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: commons-collections:commons-collections+3.2.2
+    bazaar:
+      prim: 9/CAX1053447
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053447
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: commons-logging:commons-logging+1.3.0
+    bazaar:
+      prim: 10/CAX1053110
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053110
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: dk.brics:automaton+1.12-1
+    bazaar:
+      prim: 2/CAX1055788
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055788
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: edu.princeton.cup:java-cup+10k
+    bazaar:
+      prim: 3/CAX1055184
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055184
+      selected_licenses:
+        - FAL1159000
+
+  - ID: io.micrometer:micrometer-core+1.11.10
+    bazaar:
+      prim: 116/CTX1023759
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023759
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: javax.inject:javax.inject+1
+    bazaar:
+      prim: 1/CAX1056177
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056177
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: net.javacrumbs.json-unit:json-unit-assertj+2.32.0
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: net.javacrumbs.json-unit:json-unit-json-path+2.32.0
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.assertj:assertj-core+3.24.2
+    bazaar:
+      prim: 30/CAX1059199
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1059199
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.hibernate.orm:hibernate-core+6.2.20.Final
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.junit.platform:junit-platform-commons+1.10.2
+    bazaar:
+      prim: 49/CAX1053949
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053949
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.junit.platform:junit-platform-engine+1.10.2
+    bazaar:
+      prim: 49/CAX1053949
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053949
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.opentest4j:opentest4j+1.3.0
+    bazaar:
+      prim: 5/CTX1025327
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1025327
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-actuator-autoconfigure+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-actuator-autoconfigure+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-actuator+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-actuator+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-test-autoconfigure+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml+2.15.3
+    bazaar:
+      prim: 63/CAX1057397
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1057397
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.jcraft:jsch.agentproxy.jsch+0.0.9
+    bazaar:
+      prim: 2/CTX1026657
+      stako_decision_reason: allowed
+      stako: ESW4
+    mimer:
+      linking: Classpath
+      product_number: CTX1026657
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-el+10.1.18
+    bazaar:
+      prim: 297/CAX1053029
+      stako_decision_reason: allowed
+      stako: ESW3
+    mimer:
+      linking: Classpath
+      product_number: CAX1053029
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-jdbc+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.core:jackson-annotations+2.15.3
+    bazaar:
+      prim: 106/CAX1056157
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056157
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.core:jackson-core+2.15.3
+    bazaar:
+      prim: 115/CAX1056158
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056158
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.core:jackson-databind+2.15.3
+    bazaar:
+      prim: 140/CAX1056155
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056155
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.datatype:jackson-datatype-jdk8+2.15.3
+    bazaar:
+      prim: 48/CTX1021798
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1021798
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.datatype:jackson-datatype-jsr310+2.15.3
+    bazaar:
+      prim: 56/CAX1058821
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058821
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.fasterxml.jackson.module:jackson-module-parameter-names+2.15.3
+    bazaar:
+      prim: 48/CTX1021798
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1021798
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.projectreactor:reactor-core+3.5.14
+    bazaar:
+      prim: 87/CTX1021254
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1021254
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.prometheus:simpleclient+0.16.0
+    bazaar:
+      prim: 18/CTX1022207
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022207
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.prometheus:simpleclient_common+0.16.0
+    bazaar:
+      prim: 18/CTX1022207
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022207
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.prometheus:simpleclient_tracer_common+0.16.0
+    bazaar:
+      prim: 18/CTX1022207
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022207
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.prometheus:simpleclient_tracer_otel+0.16.0
+    bazaar:
+      prim: 18/CTX1022207
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022207
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.prometheus:simpleclient_tracer_otel_agent+0.16.0
+    bazaar:
+      prim: 18/CTX1022207
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022207
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.smallrye:jandex+3.0.5
+    bazaar:
+      prim: 2/CTX1038432
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1038432
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: net.bytebuddy:byte-buddy+1.14.11
+    bazaar:
+      prim: 90/CAX1059816
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1059816
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: net.bytebuddy:byte-buddy-agent+1.14.11
+    bazaar:
+      prim: 90/CAX1059816
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1059816
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: net.logstash.logback:logstash-logback-encoder+7.3
+    bazaar:
+      prim: 13/CTX1020602
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1020602
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: net.minidev:json-smart+2.4.11
+    bazaar:
+      prim: 21/CAX1056446
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056446
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.commons:commons-text+1.10.0
+    bazaar:
+      prim: 8/CTX1020687
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1020687
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents.core5:httpcore5-h2+5.2.4
+    bazaar:
+      prim: 45/CAX1053847
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053847
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.logging.log4j:log4j-api+2.20.0
+    bazaar:
+      prim: 15/CTX1025581
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1025581
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.glassfish.jaxb:jaxb-runtime+4.0.4
+    bazaar:
+      prim: 23/CTX1022341
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1022341
+      selected_licenses:
+        - EDL-1.0
+
+  - ID: org.hibernate.common:hibernate-commons-annotations+6.0.6.Final
+    bazaar:
+      prim: 22/CAX1053559
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053559
+      selected_licenses:
+        - LGPL-2.1
+
+  - ID: org.jboss.logging:jboss-logging+3.5.3.Final
+    bazaar:
+      prim: 21/CAX1056042
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056042
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.openapitools:jackson-databind-nullable+0.2.6
+    bazaar:
+      prim: 6/CTX1027927
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1027927
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.slf4j:jul-to-slf4j+2.0.11
+    bazaar:
+      prim: 63/CAX1053096
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053096
+      selected_licenses:
+        - MIT
+
+  - ID: org.slf4j:slf4j-api+2.0.11
+    bazaar:
+      prim: 63/CAX1053096
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053096
+      selected_licenses:
+        - MIT
+
+  - ID: org.springdoc:springdoc-openapi-starter-common+2.1.0
+    bazaar:
+      prim: 26/CTX1027933
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1027933
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springdoc:springdoc-openapi-starter-webmvc-api+2.1.0
+    bazaar:
+      prim: 26/CTX1027933
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1027933
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springdoc:springdoc-openapi-starter-webmvc-ui+2.1.0
+    bazaar:
+      prim: 26/CTX1027933
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1027933
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-actuator+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-autoconfigure+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-aop+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-data-jpa+3.1.8
+    bazaar:
+      prim: 106/CAX1056597
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056597
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-json+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-logging+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-reactor-netty+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-test+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-tomcat+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-web+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-webflux+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-test+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.cloud:spring-cloud-contract-spec+4.0.3
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.cloud:spring-cloud-contract-spec-java+4.0.3
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.cloud:spring-cloud-contract-verifier+4.0.3
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.data:spring-data-commons+3.1.8
+    bazaar:
+      prim: 141/CAX1056596
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056596
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.data:spring-data-jpa+3.1.8
+    bazaar:
+      prim: 106/CAX1056597
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056597
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.kafka:spring-kafka+3.0.13
+    bazaar:
+      prim: 85/CTX1020156
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1020156
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.webjars:swagger-ui+4.18.2
+    bazaar:
+      prim: 4/CTX1037224
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1037224
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.xmlunit:xmlunit-core+2.10.0
+    bazaar:
+      register: 'yes'
+      prim: 21/CAX1053461
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053461
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.github.tomakehurst:wiremock-jre8-standalone+2.35.1
+    bazaar:
+      prim: 10/CTX1023729
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1023729
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.data:spring-data-neo4j+7.1.8
+    bazaar:
+      register: 'yes'
+      prim: 3/CTX1029147
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1029147
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.neo4j:neo4j-cypher-dsl+2023.2.0
+    bazaar:
+      register: 'yes'
+      prim: 3/CTX1029147
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1029147
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apiguardian:apiguardian-api+1.1.1
+    bazaar:
+      prim: 3/CTX1024798
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1024798
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: regex_matcher:io.netty:netty-.*\+4.1.105.Final
+    bazaar:
+      prim: 153/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.neo4j.driver:neo4j-java-driver+5.15.0
+    bazaar:
+      prim: 25/CTX1027196
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1027196
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-tcnative-classes+2.0.61.Final
+    bazaar:
+      prim: 36/CTX1021008
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1021008
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.google.guava:guava+32.1.2-jre
+    bazaar:
+      prim: 84/CAX1054600
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054600
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.google.re2j:re2j+1.6
+    bazaar:
+      prim: 6/CTX1024001
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1024001
+      selected_licenses:
+        - BSD-3-Clause
+
+  - ID: com.eclipsesource.minimal-json:minimal-json+0.9.5
+    bazaar:
+      prim: 3/CAX1057885
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1057885
+      selected_licenses:
+        - MIT
+
+  - ID: com.google.errorprone:error_prone_annotations+2.18.0
+    bazaar:
+      prim: 22/CTX1020689
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1020689
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.google.guava:failureaccess+1.0.1
+    bazaar:
+      prim: 35/CAX1054600
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054600
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.google.guava:listenablefuture+9999.0-empty-to-avoid-conflict-with-guava
+    bazaar:
+      prim: 84/CAX1054600
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      register: 'yes'
+      linking: Classpath
+      product_number: CAX1054600
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.google.j2objc:j2objc-annotations+2.8
+    bazaar:
+      prim: 6/CTX1020693
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1020693
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: com.squareup.okio:okio-jvm+3.4.0
+    bazaar:
+      prim: 28/CAX1059385
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1059385
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: commons-codec:commons-codec+1.15
+    bazaar:
+      prim: 15/CAX1053109
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053109
+      selected_licenses:
+        - Apache-1.1
+        - Apache-2.0
+
+  - ID: commons-logging:commons-logging+1.2
+    bazaar:
+      prim: 7/CAX1053110
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053110
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: http://packages.confluent.io/maven:io.confluent:common-utils+7.3.1
+    bazaar:
+      prim: 17/CTX1022167
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1022167
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: http://packages.confluent.io/maven:io.confluent:kafka-avro-serializer+7.5.1
+    bazaar:
+      prim: 1/CTX1010658
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      register: 'yes'
+      linking: Classpath
+      product_number: CTX1010658
+      selected_licenses:
+        - FAL1153335
+
+  - ID: http://packages.confluent.io/maven:io.confluent:kafka-schema-registry-client+7.5.1
+    bazaar:
+      prim: 5/CTX1010582
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      register: 'yes'
+      linking: Classpath
+      product_number: CTX1010582
+      selected_licenses:
+        - FAL1153335
+
+  - ID: http://packages.confluent.io/maven:io.confluent:kafka-schema-serializer+7.5.1
+    bazaar:
+      prim: 5/CTX1010582
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1010582
+      selected_licenses:
+        - FAL1153335
+
+  - ID: io.confluent:logredactor+1.0.11
+    bazaar:
+      prim: 2/CTX1037553
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1037553
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.confluent:logredactor-metrics+1.0.11
+    bazaar:
+      prim: 2/CTX1037553
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1037553
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.micrometer:micrometer-jakarta9+1.12.2
+    bazaar:
+      prim: 113/CTX1023759
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1023759
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-buffer+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-codec+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-codec-dns+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-codec-http+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-codec-http2+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-codec-socks+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-common+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-handler+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-handler-proxy+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-resolver+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-resolver-dns+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-resolver-dns-classes-macos+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-resolver-dns-native-macos+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-transport+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-transport-classes-epoll+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-transport-native-epoll+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.netty:netty-transport-native-unix-common+4.1.108.Final
+    bazaar:
+      prim: 157/CAX1054544
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054544
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.projectreactor.netty:reactor-netty-core+1.1.13
+    bazaar:
+      prim: 71/CTX1024915
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1024915
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.projectreactor.netty:reactor-netty-http+1.1.13
+    bazaar:
+      prim: 71/CTX1024915
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1024915
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: io.swagger.core.v3:swagger-annotations+2.1.12
+    bazaar:
+      prim: 16/CAX1056693
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1056693
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: jakarta.json.bind:jakarta.json.bind-api+3.0.0
+    bazaar:
+      prim: 2/CTX1031583
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1031583
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: jakarta.json:jakarta.json-api+2.1.3
+    bazaar:
+      prim: 9/CTX1021810
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1021810
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.apache.avro:avro+1.11.3
+    bazaar:
+      prim: 24/CAX1054634
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1054634
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.commons:commons-compress+1.26.0
+    bazaar:
+      prim: 29/CAX1054802
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1054802
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.commons:commons-lang3+3.12.0
+    bazaar:
+      prim: 27/CAX1053253
+      stako: ESW4
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053253
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents:httpasyncclient+4.1.5
+    bazaar:
+      prim: 11/CAX1055405
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1055405
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents:httpclient+4.5.14
+    bazaar:
+      prim: 59/CAX1053846
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053846
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents:httpcore+4.4.16
+    bazaar:
+      prim: 40/CAX1053847
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053847
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.httpcomponents:httpcore-nio+4.4.16
+    bazaar:
+      prim: 10/CTX1020149
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1020149
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-core+10.1.17
+    bazaar:
+      prim: 28/CAX1059392
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1059392
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-el+10.1.17
+    bazaar:
+      prim: 21/CTX1020119
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1020119
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat.embed:tomcat-embed-websocket+10.1.17
+    bazaar:
+      prim: 17/CTX1020125
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1020125
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.apache.tomcat:tomcat-annotations-api+10.1.17
+    bazaar:
+      prim: 297/CAX1053029
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1053029
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.checkerframework:checker-qual+3.33.0
+    bazaar:
+      prim: 6/CTX1034514
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1034514
+      selected_licenses:
+        - MIT
+
+  - ID: org.eclipse.parsson:parsson+1.1.5
+    bazaar:
+      prim: 4/CTX1037765
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1037765
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.eclipse:yasson+3.0.3
+    bazaar:
+      prim: 6/CTX1031111
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1031111
+      selected_licenses:
+        - EPL-2.0
+
+  - ID: org.hibernate.validator:hibernate-validator+8.0.1.Final
+    bazaar:
+      prim: 61/CAX1053451
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1053451
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.jetbrains.kotlin:kotlin-stdlib+1.8.22
+    bazaar:
+      prim: 43/CTX1026720
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026720
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.jetbrains.kotlin:kotlin-stdlib-common+1.8.22
+    bazaar:
+      prim: 43/CTX1026720
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026720
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.jetbrains.kotlin:kotlin-stdlib-jdk7+1.8.22
+    bazaar:
+      prim: 43/CTX1026720
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026720
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.jetbrains.kotlin:kotlin-stdlib-jdk8+1.8.22
+    bazaar:
+      prim: 43/CTX1026720
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1026720
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.jetbrains:annotations+24.0.1
+    bazaar:
+      prim: 15/CAX1059725
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1059725
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.opensearch.client:opensearch-java+2.6.0
+    bazaar:
+      prim: 1/CTX1040172
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1040172
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.opensearch.client:opensearch-rest-client+2.9.0
+    bazaar:
+      prim: 25/CTX1033030
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CTX1033030
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-actuator+3.2.2
+    bazaar:
+      prim: CTX1040476
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CTX1040476
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.springframework.boot:spring-boot-starter-validation+3.1.8
+    bazaar:
+      prim: 195/CAX1058168
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number: CAX1058168
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.xerial.snappy:snappy-java+1.1.10.4
+    bazaar:
+      prim: 29/CAX1056425
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056425
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.yaml:snakeyaml+2.2
+    bazaar:
+      prim: 29/CAX1056807
+      stako: ESW2
+    mimer:
+      linking: Classpath
+      product_number: CAX1056807
+      selected_licenses:
+        - Apache-2.0
+
+  - ID: org.projectlombok:lombok+1.18.30
+    bazaar:
+      prim: 22/CAX1056250
+      stako: ESW3
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+      product_number:	CAX1056250
+      selected_licenses:
+        - Apache-2.0

@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "schema1",
+  "namespace": "writer",
+  "fields": [
+    {"name": "c1", "type": "string"},
+    {"name": "c2", "type": "string"},
+    {"name": "rvi", "type": "long"},
+    {"name": "rvf", "type": "double"},
+    {"name": "ri1", "type": "string"},
+    {"name": "ri2", "type": "string"}
+  ]
+}

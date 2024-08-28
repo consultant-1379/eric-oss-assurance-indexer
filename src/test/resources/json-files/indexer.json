@@ -1,0 +1,76 @@
+{
+  "name" : "indexerA",
+  "description" : "description for indexer A",
+  "source" : {
+    "name" : "kafka-topic",
+    "type" : "pmstatsexporter"
+  },
+  "writers" : [ {
+    "inputSchema" : "writer.schema1",
+    "name" : "writer 1",
+    "context" : [ {
+      "name" : "c1",
+      "displayName" : "Context1_DisplayName",
+      "description" : "Context1_Description"
+    }, {
+      "name" : "c2",
+      "displayName" : "Context2_DisplayName",
+      "nameType" : "colonSeparated"
+    } ],
+    "value" : [ {
+      "recordName" : "rvi",
+      "name" : "vi",
+      "description" : "value description for vi",
+      "type" : "integer"
+    }, {
+      "recordName" : "rvf",
+      "name" : "vf",
+      "description" : "value description for vf",
+      "type" : "float"
+    } ],
+    "info" : [ {
+      "recordName" : "rvi",
+      "name" : "it",
+      "description" : "value description for it time",
+      "type" : "string"
+    }, {
+      "recordName" : "ri1",
+      "name" : "i1",
+      "description" : "infoFieldZ Description",
+      "type" : "string"
+    }, {
+      "recordName" : "ri2",
+      "name" : "i2",
+      "description" : "infoFieldZ Description",
+      "type" : "string"
+    } ]
+  },
+  {
+    "inputSchema": "writer.schema2",
+    "name": "B",
+    "context": [ {
+      "name": "c1"
+    } ],
+    "value": [ {
+      "recordName": "rv1",
+      "name": "r1",
+      "description": "valueFieldX Description",
+      "type": "float"
+    } ]
+  },
+  {
+    "inputSchema" : "twofields",
+    "name" : "TF",
+    "context" : [ {
+      "name" : "c"
+    }],
+    "value" : [ {
+      "name" : "v"
+    } ]
+  } ],
+  "target" : {
+    "displayName" : "SearchIndexA_DisplayName",
+    "name" : "an-index",
+    "indexDescription" : "SearchIndexA_Description"
+  }
+}

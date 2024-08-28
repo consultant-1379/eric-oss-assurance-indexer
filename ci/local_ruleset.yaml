@@ -1,0 +1,428 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: 2.0
+description: "Ericsson Java Spring Boot OSS Assurance Indexer Service (AIS)"
+# See image catalog: https://eteamspace.internal.ericsson.com/display/ACD/ADP+CICD+Docker+Image+Catalog
+docker-images:
+  - adp-asciidoc-builder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-asciidocbuilder:${env.ASCII_DOC_BUILDER_TAG}
+  - adp-doc-builder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-docbuilder:${env.DOC_BUILDER_TAG}
+  - adp-helm-dr-check: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/common-library-adp-helm-dr-check:${env.HELM_DR_CHECK_TAG}
+  - adp-helm-kubectl: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-py3kubehelmbuilder:${env.HELM_KUBECTL_TAG}
+  - adp-image-dr-check: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/adp-image-dr-check:${env.IMAGE_DR_CHECK_TAG}
+  - adp-maven-builder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-java17mvnbuilder:${env.MVN_BUILDER_TAG}
+  - adp-release-auto: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-adp-release-auto:${env.RELEASE_AUTO_TAG}
+  - elib-make-utilities: ${elib-make-subpath}-oss-drop/eric-elib/elib_makeutilities:${env.ELIB_MAKE_UTILITIES_TAG}
+  - bth-linter: armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-bth/eric-bth-spectral-linter:${env.BTH_LINTER_TAG}
+  - sdk-validator: armdocker.rnd.ericsson.se/proj-eric-oss-sdkschema-drop/eric-oss-sdkschema-validator:${env.SDKSCHEMA_VALIDATOR_TAG}
+  - grype-scan: ${grype-image}:${env.ANCHORE_TAG}
+  - trivy-inline-scan: ${trivy-image}:${env.TRIVY_TAG}
+  - va-scan-kubesec: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubesec:${env.KUBESEC_TAG}
+  - va-scan-kubeaudit: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubeaudit:${env.KUBEAUDIT_TAG}
+  - va-scan-kubehunter: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-scan-kubehunter:${env.KUBEHUNTER_TAG}
+  - hadolint-scan: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/hadolint-scan:${env.HADOLINT_TAG}
+import:
+  common: ../common-properties.yaml
+  common-rules: common_ruleset2.0.yaml
+# List of constants
+properties:
+  - elib-make-subpath: armdocker.rnd.ericsson.se/proj-eric
+  - grype-image: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/va-image-scanning-grype
+  - trivy-image: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/trivy-inline-scan
+  - project-subpath: proj-eric-oss
+  - image-registry-path: armdocker.rnd.ericsson.se/proj-eric-oss
+  - image-secret: armdocker
+  - image-to-scan: ${image-ci-full-name}:${var.version}
+  - image-dev-repopath: ${image-registry-path}-dev
+  - image-ci-repopath: ${image-registry-path}-ci-internal
+  - image-drop-repopath: ${image-registry-path}-drop
+  - image-ci-full-name: ${image-ci-repopath}/${common.docker-image-name}
+  - image-full-name: ${image-drop-repopath}/${common.docker-image-name}
+  # Helm Chart name must follow the pattern: eric-[a-z0-9]{1,5}-[a-z0-9-]{1,30}
+  - helm-chart-repo-server-path: https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss
+  - helm-chart-dev-repopath: ${helm-chart-repo-server-path}-dev-helm
+  - helm-chart-ci-repopath: ${helm-chart-repo-server-path}-ci-internal-helm
+  - helm-chart-drop-repo: ${helm-chart-repo-server-path}-drop-helm
+  - arm-doc-dev: ${helm-chart-repo-server-path}-dev-generic-local/eric-oss-assurance-indexer
+  - arm-doc-released: ${helm-chart-repo-server-path}-released-generic-local/eric-oss-assurance-indexer
+  # Generic repository for publishing artifacts such as documentation
+  - generic-drop-repo: ${helm-chart-repo-server-path}-drop-generic
+  # Functional ID for your Team or CI group to push to Gerrit repo
+  - git-user: ossadmin
+  - git-repo-name: ${common.gerrit-repo-name}
+  - git-repo-url: https://gerrit-gamma.gic.ericsson.se/${git-repo-name}.git
+  - enabled-helm-design-rules: "-DhelmDesignRule.config.drHc011=enable -DhelmDesignRule.config.DR-D1120-045-AD=enable"
+  # disabled design rules until the chart supports the affected feature
+  - disabled-helm-design-rules: "-DhelmDesignRule.config.DR-D1123-113=disable -DhelmDesignRule.config.DR-D470217-001=disable"
+  # FOSSA
+  - fossa-server-endpoint: https://scasfossa.internal.ericsson.com/
+  - fossa-project-name: ${common.helm-chart-name}
+  - fossa-report-name: fossa-report.json
+  - dependency-file-name: fossa/dependencies.yaml
+  - fossa-team-name: eric-oss-ppt2exe
+  - docker-params: "--workdir ${env.PWD}"
+  # VA
+  - zap-config: config/zap_config.yaml
+  - nmap-config: config/nmap_config.yaml
+# import environment variables (For example: Jenkins parameters)
+env:
+  - HOME
+  - MAVEN_CLI_OPTS (default=-Duser.home=${env.HOME} -B)
+  - MAVEN_OPTS (default=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn)
+  - PWD
+  - RELEASE (default=false)
+  - DOCKER_VOLUME_MAPPING_PASSWD (default=--volume ${env.HOME}/mypasswd:/etc/passwd:ro)
+  - PROJ_MVN (default=/proj/mvn)
+  # Kubernetes
+  - COLLECT_LOGS_SCRIPT_LOCATION (default="https://arm.sero.gic.ericsson.se/artifactory/proj-ADP_GS_Support_FTP-generic-local/collect_ADP_logs")
+  - COLLECT_LOGS_SCRIPT_FILE_NAME (default="collect_ADP_logs.sh")
+  - COLLECT_LOGS_SINCE_RELATIVE_TIME (default="2h")
+  - COLLECT_LOGS_DIR (default=./k8s-logs)
+  - ENABLE_HELM_V3 (default=true)
+  - HELM_INSTALL_TIMEOUT (default=5m0s)
+  - HELM_RELEASE (default=${common.helm-chart-name}-release)
+  - HELM_TEST_TIMEOUT (default=5m0s)
+  - K8S_NAMESPACE (default=${common.helm-chart-name}-${var.commithash})
+  - KUBECONFIG
+  - BUILD_DIR (default=./build)
+  - KAAS_INFO_FILE (default=${env.BUILD_DIR}/kaas-info.log)
+  # Credentials
+  - ERIDOC_USERNAME
+  - ERIDOC_PASSWORD
+  - GERRIT_USERNAME
+  - GERRIT_PASSWORD
+  - GERRIT_CHANGE_NUMBER (default=$GERRIT_CHANGE_NUMBER)
+  - GERRIT_CHANGE_URL (default=$GERRIT_CHANGE_URL)
+  - JIRA_USERNAME
+  - JIRA_PASSWORD
+  - SELI_ARTIFACTORY_REPO_USER
+  - SELI_ARTIFACTORY_REPO_PASS
+  - SERO_ARTIFACTORY_REPO_USER
+  - SERO_ARTIFACTORY_REPO_PASS
+  - AIS_MARKETPLACE_TOKEN
+  # Default docker image tags
+  - ASCII_DOC_BUILDER_TAG (default=latest)
+  - DOC_BUILDER_TAG (default=2.3.0-latest)
+  - ELIB_MAKE_UTILITIES_TAG (default=latest)
+  - HELM_DR_CHECK_TAG (default=latest)
+  - HELM_KUBECTL_TAG (default=latest)
+  - IMAGE_DR_CHECK_TAG (default=latest)
+  - MVN_BUILDER_TAG (default=latest)
+  - RELEASE_AUTO_TAG (default=latest)
+  - BTH_LINTER_TAG (default=latest)
+  - SDKSCHEMA_VALIDATOR_TAG (default=latest)
+  # VA Tools docker image tags
+  - ANCHORE_TAG (default=latest)
+  - TRIVY_TAG (default=latest)
+  - KUBESEC_TAG (default=latest)
+  - KUBEAUDIT_TAG (default=latest)
+  - KUBEHUNTER_TAG (default=latest)
+  - HADOLINT_TAG (default=latest)
+  # SonarQube
+  - SONAR_AUTH_TOKEN
+  - SONAR_HOST_URL
+  - SONAR_BRANCH (default="master")
+  # REST2HTML - Document Number of the REST Container file (The decimal class for a container is 190 89-)
+  - REST2HTML_NUM (default="190 89-CAAH 101 091/1")
+  # BTH Linter
+  - OPEN_API_SPEC_DIRECTORY (default=src/main/resources/v1)
+  # BAZAAR
+  - BAZAAR_USER (default=ossadmin)
+  - BAZAAR_TOKEN
+  # FOSSA
+  - FOSSA_ARTIFACT_HASH
+  - FOSSA_API_KEY
+  # X-RAY
+  - XRAY_USER
+  - XRAY_APIKEY
+  # VHUB
+  - VHUB_API_TOKEN
+# Variables, set by below tasks
+var:
+  - commithash
+  - commithash-full
+  - commit-author
+  - commit-email
+  - docker-config-basepath
+  - image-registry
+  - helm-chart-repo-internal
+  - image-full-name-internal
+  - image-repopath-internal
+  - image-repopath-drop
+  - pom-version
+  - rest2html-optional
+  - revision
+  - rstate
+  - version
+  - version-prefix
+  - image-dr-vm-args
+  - kaas-version
+  - kaas-current-context
+  - resultcode_hadolint_check
+  - save-namespace
+# Rules to execute
+rules:
+  # Generate documents: .md to .pdf & .html, prepare for uploading to Eridoc later
+  generate-docs:
+    - task: markdown-to-pdf
+      docker-image: adp-release-auto
+      cmd: 'doc-handler generate --config doc/handler_pdf_config.yaml
+                                 --output ./build/doc/pdf
+                                 --stylesheet doc/stylesheet/pdf_style.css
+                                 --format pdf'
+  # Prepare zip package documents for marketplace upload
+  generate-doc-zip-package:
+    - task: generate-doc-zip
+      docker-image: adp-release-auto
+      cmd: 'doc-handler generate --config config/doc_handler_config.config
+                                 --output ./build/doc-marketplace
+                                 --format html
+                                 --zip'
+  # Upload zip package documents to ARM dev
+  marketplace-upload-dev:
+    - task: upload-doc-to-arm
+      docker-image: adp-release-auto
+      cmd: marketplace upload --arm-api-token ${env.SELI_ARTIFACTORY_REPO_PASS}
+        --arm-url ${arm-doc-dev}
+        --config config/doc_handler_upload_config.config
+        --dev
+        --debug
+        --refresh
+        --portal-token ${env.AIS_MARKETPLACE_TOKEN}
+  # Upload zip package documents to ARM release
+  marketplace-upload-release:
+    - task: upload-doc-to-arm
+      docker-image: adp-release-auto
+      cmd: marketplace upload --arm-api-token ${env.SELI_ARTIFACTORY_REPO_PASS}
+        --arm-url ${arm-doc-released}
+        --config config/doc_handler_upload_config.config
+        --version ${var.version}
+        --debug
+        --refresh
+        --portal-token ${env.AIS_MARKETPLACE_TOKEN}
+  hadolint-scan:
+    - task: hadolint-scan-test
+      docker-image: hadolint-scan
+      docker-flags:
+        - "--workdir /app/"
+        - "-v ${env.PWD}/config/hadolint_config.yaml:/config/hadolint_config.yaml"
+        - "-v ${env.PWD}/Dockerfile:/Dockerfile"
+        - "-v ${env.PWD}/build/va-reports/hadolint-scan:/tmp/reports/"
+      cmd: "-p ${common.helm-chart-name} -f /Dockerfile -c /config/hadolint_config.yaml; echo $? > .bob/var.resultcode_hadolint_check"
+  kubehunter-scan:
+    - task: get-config
+      cmd: cp -v .kube/config  ${env.PWD}/config/config
+    - task: kubehunter-scan-test
+      docker-image: va-scan-kubehunter
+      docker-flags:
+        - "--workdir /opt/kubehunter/"
+        - ${env.DOCKER_VOLUME_MAPPING_PASSWD}
+        - "--env KUBECONFIG=${env.KUBECONFIG}"
+        - "--volume ${env.KUBECONFIG}:${env.KUBECONFIG}:ro"
+        - "-v ${env.PWD}/config:/opt/kubehunter/conf"
+        - "-v ${env.PWD}/build/va-reports/kubehunter-report/:/tmp/reports"
+      cmd: " "
+  # Run kubeaudit
+  kube-audit:
+    - task: helm-template
+      docker-image: adp-release-auto
+      cmd: "helm template charts/${common.helm-chart-name} --output-dir=.bob/helm_src"
+    - task: kube-audit-test
+      docker-image: va-scan-kubeaudit
+      docker-flags:
+        - "--workdir /opt/va-scan-kubeaudit/"
+        - "-v ${env.PWD}/config:/opt/va-scan-kubeaudit/conf"
+        - "-v ${env.PWD}/build/va-reports/kube-audit-report/:/tmp/reports"
+        - "-v ${env.PWD}/.bob/helm_src:/tmp/src"
+      cmd: " "
+  # Run kubesec scanning
+  kubesec-scan:
+    - task: helm-template
+      docker-image: va-scan-kubesec
+      cmd: "helm template charts/${common.helm-chart-name} --output-dir=.bob/helm_kubesec"
+    - task: remove-files-not-for-scanning
+      cmd:
+        - rm -rf .bob/helm_kubesec/${common.helm-chart-name}/templates/tests
+        - rm -rf .bob/helm_kubesec/${common.helm-chart-name}/templates/hpa.yaml
+        - rm -rf .bob/helm_kubesec/${common.helm-chart-name}/templates/rolebinding.yaml
+    - task: kubesec-scan-test
+      docker-image: va-scan-kubesec
+      docker-flags:
+        - "--workdir /opt/va-scan-kubesec/"
+        - "-v ${env.PWD}/config:/opt/va-scan-kubesec/conf"
+        - "-v ${env.PWD}/build/va-reports/kubesec-reports/:/tmp/reports"
+        - "-v ${env.PWD}/.bob/helm_kubesec/:/tmp/src"
+      cmd: " "
+  fetch-xray-report:
+    - task: fetch-xray-report
+      docker-image: adp-release-auto
+      cmd: bash -c 'fetch-xray
+        --config ${env.PWD}/config/xray_report.config
+        --debug
+        --user ${env.XRAY_USER}
+        --apikey ${env.XRAY_APIKEY}
+        --output ${env.PWD}/build/va-reports/xray-reports/xray_report.json
+        --set artifactory-subpath=${project-subpath}
+        --set image=${common.docker-image-name}
+        --set version=${var.version}
+        --raw-output ${env.PWD}/build/va-reports/xray-reports/raw_xray_report.json'
+  trivy-inline-scan:
+    - task: fetch-image
+      cmd:
+        - "docker pull ${image-to-scan}"
+        - mkdir -p build/va-reports/trivy-reports
+    - task: trivy-inline-scan-console-report
+      docker-image: trivy-inline-scan
+      docker-in-docker: socket
+      cmd: --offline-scan --timeout 30m ${image-to-scan}
+    - task: trivy-inline-scan-json-report
+      docker-image: trivy-inline-scan
+      docker-in-docker: socket
+      cmd: --format json --output build/va-reports/trivy-reports/trivy.report.json --offline-scan --timeout 30m ${image-to-scan}
+  anchore-grype-scan:
+    - task: fetch-image
+      cmd: "docker pull ${image-to-scan}"
+    - task: anchore-grype-scan
+      docker-image: grype-scan
+      docker-in-docker: socket
+      cmd: grype_scan
+        --image ${image-to-scan}
+        --report-dir build/va-reports/anchore-reports
+        --db-url https://toolbox-data.anchore.io/grype/databases/listing.json
+  nmap-port-scanning:
+    - task: nmap-port-scanning
+      docker-image: adp-helm-kubectl
+      docker-flags:
+        - ${env.DOCKER_VOLUME_MAPPING_PASSWD}
+        - "--env KUBECONFIG=${env.KUBECONFIG}"
+        - "--volume ${env.KUBECONFIG}:${env.KUBECONFIG}:ro"
+        - "--volume ${env.PWD}:${env.PWD}"
+        - "--env K8S_NAMESPACE=${env.K8S_NAMESPACE}"
+        - "--env KUBECONFIG=${env.KUBECONFIG}"
+        - "--env SERO_ARTIFACTORY_REPO_USER=${env.SERO_ARTIFACTORY_REPO_USER}"
+        - "--env SERO_ARTIFACTORY_REPO_PASS=${env.SERO_ARTIFACTORY_REPO_PASS}"
+      cmd: va-scanner nmap-scan
+        --kubernetes-admin-conf=${env.KUBECONFIG}
+        --helm-user=${env.SERO_ARTIFACTORY_REPO_USER}
+        --arm-api-token=${env.SERO_ARTIFACTORY_REPO_PASS}
+        --kubernetes-namespace=${env.K8S_NAMESPACE}
+        --nmap-config-file=${nmap-config}
+        --skip-services-status-check
+  zap-scan:
+    - task: zap-scan
+      docker-image: adp-helm-kubectl
+      docker-flags:
+        - "--env KUBECONFIG=${env.KUBECONFIG}"
+        - "--volume ${env.KUBECONFIG}:${env.KUBECONFIG}:ro"
+        - "--volume ${env.PWD}:${env.PWD}"
+      cmd: test.py --helm-v3 --kubernetes-admin-conf=${env.KUBECONFIG}
+        --helm-user=${env.SERO_ARTIFACTORY_REPO_USER}
+        --arm-api-token=${env.SERO_ARTIFACTORY_REPO_PASS}
+        --kubernetes-namespace=${env.K8S_NAMESPACE}
+        --only-zap-test
+        --zap-config-file=${zap-config}; exit 0;
+  # Generate vulnerabililty report VA 2.0
+  generate-VA-report-V2:
+    - task: create-va-folders
+      cmd:
+        - if [ ! -d "${env.PWD}/build/va-reports/anchore-reports" ]; then mkdir -p ${env.PWD}/build/va-reports/anchore-reports; fi
+        - if [ ! -d "${env.PWD}/build/va-reports/trivy-reports" ]; then mkdir -p ${env.PWD}/build/va-reports/trivy-reports; fi
+        - if [ ! -d "${env.PWD}/build/va-reports/hadolint-scan" ];then mkdir -p ${env.PWD}/build/va-reports/hadolint-scan; fi
+        - if [ ! -d "${env.PWD}/build/va-reports/kube-audit-report" ]; then mkdir -p ${env.PWD}/build/va-reports/kube-audit-report/${common.helm-chart-name}/templates/deployment; fi
+        - if [ ! -d "${env.PWD}/build/va-reports/kubesec-reports" ]; then mkdir -p ${env.PWD}/build/va-reports/kubesec-reports; fi
+        - if [ ! -d "${env.PWD}/build/va-reports/nmap_reports" ]; then mkdir -p ${env.PWD}/build/va-reports/nmap_reports; fi
+    - task: no-upload
+      docker-image: adp-release-auto
+      docker-flags:
+        - --env VHUB_API_TOKEN
+      cmd: bash -c 'va-report
+        --set version=${var.version}
+        --config ${env.PWD}/config/va-report.config
+        --output ${env.PWD}/build/va-reports/Vulnerability_Report_2.0.md
+        --md
+        --debug
+        --anchore-reports ${env.PWD}/build/va-reports/anchore-reports
+        --trivy-reports ${env.PWD}/build/va-reports/trivy-reports
+        --xray-report ${env.PWD}/build/va-reports/xray-reports/xray_report.json
+        --raw-xray-report ${env.PWD}/build/va-reports/xray-reports/raw_xray_report.json
+        --hadolint-reports ${env.PWD}/build/va-reports/hadolint-scan
+        --kubeaudit-reports ${env.PWD}/build/va-reports/kube-audit-report/${common.helm-chart-name}/templates/deployment
+        --kubesec-reports ${env.PWD}/build/va-reports/kubesec-reports
+        --nmap-reports ${env.PWD}/build/va-reports/nmap_reports'; exit 0;
+    - task: no-upload-no-xray
+      docker-image: adp-release-auto
+      docker-flags:
+        - --env VHUB_API_TOKEN
+      cmd: bash -c 'va-report
+        --set version=${var.version}
+        --config ${env.PWD}/config/va-report.config
+        --output ${env.PWD}/build/va-reports/Vulnerability_Report_2.0.md
+        --md
+        --debug
+        --anchore-reports ${env.PWD}/build/va-reports/anchore-reports
+        --trivy-reports ${env.PWD}/build/va-reports/trivy-reports
+        --hadolint-reports ${env.PWD}/build/va-reports/hadolint-scan
+        --kubeaudit-reports ${env.PWD}/build/va-reports/kube-audit-report/${common.helm-chart-name}/templates/deployment
+        --kubesec-reports ${env.PWD}/build/va-reports/kubesec-reports
+        --nmap-reports ${env.PWD}/build/va-reports/nmap_reports'; exit 0;
+    - task: upload-no-xray
+      docker-image: adp-release-auto
+      docker-flags:
+        - --env VHUB_API_TOKEN
+      cmd: bash -c 'va-report
+        --set version=${var.version}
+        --config ${env.PWD}/config/va-report.config
+        --output ${env.PWD}/build/va-reports/Vulnerability_Report_2.0.md
+        --md
+        --debug
+        --anchore-reports ${env.PWD}/build/va-reports/anchore-reports
+        --trivy-reports ${env.PWD}/build/va-reports/trivy-reports
+        --hadolint-reports ${env.PWD}/build/va-reports/hadolint-scan
+        --kubeaudit-reports ${env.PWD}/build/va-reports/kube-audit-report/${common.helm-chart-name}/templates/deployment
+        --kubesec-reports ${env.PWD}/build/va-reports/kubesec-reports
+        --nmap-reports ${env.PWD}/build/va-reports/nmap_reports
+        --upload-scan-results'; exit 0;
+    - task: upload
+      docker-image: adp-release-auto
+      docker-flags:
+        - --env VHUB_API_TOKEN
+      cmd: bash -c 'va-report
+        --set version=${var.version}
+        --config ${env.PWD}/config/va-report.config
+        --output ${env.PWD}/build/va-reports/Vulnerability_Report_2.0.md
+        --md
+        --debug
+        --anchore-reports ${env.PWD}/build/va-reports/anchore-reports
+        --trivy-reports ${env.PWD}/build/va-reports/trivy-reports
+        --xray-report ${env.PWD}/build/va-reports/xray-reports/xray_report.json
+        --raw-xray-report ${env.PWD}/build/va-reports/xray-reports/raw_xray_report.json
+        --hadolint-reports ${env.PWD}/build/va-reports/hadolint-scan
+        --kubeaudit-reports ${env.PWD}/build/va-reports/kube-audit-report/${common.helm-chart-name}/templates/deployment
+        --kubesec-reports ${env.PWD}/build/va-reports/kubesec-reports
+        --nmap-reports ${env.PWD}/build/va-reports/nmap_reports
+        --upload-scan-results'; exit 0;
+    # Convert .md VA report to .html report
+    - task: va-report-to-html
+      docker-image: adp-release-auto
+      cmd: bash -c 'if [ -f "${env.PWD}/build/va-reports/Vulnerability_Report_2.0.md" ];
+        then
+        doc-handler generate
+        --config config/va_html_config.yaml
+        --output build/html
+        --format html;
+        else
+        echo "The Vulnerability_Report_2.0.md file does not exist in the workspace to generate the HTML report.";
+        fi'

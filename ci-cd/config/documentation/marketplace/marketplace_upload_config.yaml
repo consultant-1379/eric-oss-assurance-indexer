@@ -1,0 +1,16 @@
+documents:
+  - name: "Service User Guide"
+    filepath: build/docs-marketplace/user-guide.zip
+    default: true
+  - name: "Application Developers Guide"
+    filepath: build/docs-marketplace/developers-guide.zip
+  - name: "Service Deployment Guide"
+    filepath: build/docs-marketplace/deployment-guide.zip
+  - name: "Troubleshooting Guide"
+    filepath: build/docs-marketplace/troubleshooting-guide.zip
+  - name: "API Documentation"
+    filepath: src/main/resources/v1/index.html
+  - name: Inner Source README
+    filepath: build/docs-marketplace/read-me.zip
+  - name: Contributing Guideline
+    filepath: build/docs-marketplace/contributing.zip

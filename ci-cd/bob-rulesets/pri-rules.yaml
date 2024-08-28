@@ -1,0 +1,80 @@
+modelVersion: 2.0
+
+
+description: "PRI Rules"
+
+
+import:
+  images: docker-images.yaml
+  common: common-rules.yaml
+
+
+properties:
+    # PRI automation tool
+    - pri-tool-flags: ""
+    - pri-git-from-change: "${env.FROM_CHANGE}"
+    - pri-git-to-change: "${env.TO_CHANGE}"
+    - pri-jira-component-long-name: ""
+    - pri-gerrit-url: ""
+    - pri-config-version: "1.11"
+    - pri-product-release-number: "${var.common.version-prefix}"
+    - pri-release-report: "cicd/config/pri/manual-inputs/release-report.json"
+    - pri-manual-json: "cicd/config/pri/manual-inputs/pri-manual-input.json"
+    - pri-collector-config-json: "cicd/config/pri/manual-inputs/collectors-config.json"
+    - pri-eridoc-config: "cicd/config/pri/manual-inputs/eridoc-config.yaml"
+    - pri-eridoc-prepared: "ADPCCM"
+    - pri-eridoc-approver: ""
+    - pri-eridoc-responsible: ""
+    - pri-output-dir: "${env.common.ARCHIVE_ARTIFACTS_DIR}/pri-doc/"
+    - pri-eridoc-username: "${env.ERIDOC_USERNAME}"
+    - pri-eridoc-password: "${env.ERIDOC_PASSWORD}"
+    - pri-gerrit-username: "${env.GERRIT_USERNAME}"
+    - pri-gerrit-password: "${env.GERRIT_PASSWORD}"
+    - pri-jira-username: "${env.JIRA_USERNAME}"
+    - pri-jira-password: "${env.JIRA_PASSWORD}"
+    - pri-docker-flags: --env GERRIT_USERNAME="${pri-gerrit-username}"
+                        --env GERRIT_PASSWORD="${pri-gerrit-password}"
+                        --env JIRA_USERNAME="${pri-jira-username}"
+                        --env JIRA_PASSWORD="${pri-jira-password}"
+                        --env ERIDOC_USERNAME="${pri-eridoc-username}"
+                        --env ERIDOC_PASSWORD="${pri-eridoc-password}"
+                        --env PRI_CONFIG_EXTRA="${pri-collector-config-json}"
+                        --env HELM_FOLDER_LINK="${env.HELM_FOLDER_LINK}"
+                        --env HELM_CHART_VERSION=${common.version}
+
+
+env:
+  - ERIDOC_USERNAME (default=)
+  - ERIDOC_PASSWORD (default=)
+  - GERRIT_USERNAME (default=${common.user})
+  - GERRIT_PASSWORD (default=)
+  - JIRA_USERNAME (default=)
+  - JIRA_PASSWORD (default=)
+  - FROM_CHANGE (default=)
+  - TO_CHANGE (default=HEAD)
+  - HELM_FOLDER_LINK (default="")
+
+
+rules:
+  generate-with-flags:
+    - task: create-dir
+      cmd: mkdir -p ${pri-output-dir}
+    - task: generate-upload-generate
+      docker-image: images.adp-release-auto
+      docker-flags:
+        - ${pri-docker-flags}
+      cmd: pri2
+            ${pri-tool-flags}
+            --config "${pri-config-version}"
+            --from-change "${pri-git-from-change}"
+            --to-change "${pri-git-to-change}"
+            --product-release-number "${pri-product-release-number}"
+            --jira-component-long-name "${pri-jira-component-long-name}"
+            --gerrit-url "${pri-gerrit-url}"
+            --release-report "${pri-release-report}"
+            --pri-manual-json "${pri-manual-json}"
+            --eridoc-config "${pri-eridoc-config}"
+            --eridoc-prepared "${pri-eridoc-prepared}"
+            --eridoc-approver "${pri-eridoc-approver}"
+            --eridoc-responsible "${pri-eridoc-responsible}"
+            --output-dir "${pri-output-dir}"

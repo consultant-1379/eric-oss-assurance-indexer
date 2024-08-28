@@ -1,0 +1,4 @@
+[{"full_context": "NF_SNSSAI", "value_context": "NF_SNSSAI_AMFMeanRegNbr", "context": ["SNSSAI", "NF"], "c_SNSSAI": "1:1", "c_NF": "AMF_BC", "value_name": "AMFMeanRegNbr", "vi_NF_SNSSAI_AMFMeanRegNbr": 10, "ft_begin_timestamp": "<timestamp>", "ft_end_timestamp": "<timestamp>"},
+  {"full_context": "NF_SNSSAI", "value_context": "NF_SNSSAI_AMFMeanRegNbr", "context": ["11"], "c_11": "1:1", "value_name": "AMFMeanRegNbr", "vi_NF_SNSSAI_AMFMeanRegNbr": 10, "ft_begin_timestamp": "<timestamp>", "ft_end_timestamp": "<timestamp>"},
+  {"full_context": "NF_SNSSAI", "value_context": "NF_SNSSAI_AMFMeanRegNbr", "context": ["SNSSAI", "AAA", "NF"], "c_SNSSAI": "1:2", "c_AAA": "foo", "c_NF": "AMF_BC", "value_name": "AMFMeanRegNbr", "vi_AMFMeanRegNbr": 20}
+]

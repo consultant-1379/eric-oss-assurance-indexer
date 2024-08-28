@@ -1,0 +1,165 @@
+modelVersion: 2.0
+
+
+description: "Common Rules"
+
+
+import:
+  images: docker-images.yaml
+
+
+properties:
+  - submodule-base-directory: ${var.common-submodule-base-directory}
+
+  - dry-run: ${env.DRY_RUN}
+  - debug: ${env.DEBUG}
+
+  - release: ${env.RELEASE}
+
+  - version: ${var.version}
+  - version-prefix: ${var.version-prefix}
+  - version-major: ${var.version-major}
+  - build-number: ${var.build-number}
+  - version-release: ${var.version-release}
+
+  - ci-build-directory: ${env.BUILD_DIR}
+  - ci-artifacts-directory: ${env.ARCHIVE_ARTIFACTS_DIR}
+  - ci-reports-directory: ${env.REPORT_DIR}
+  - ci-html-reports-directory: ${env.HTML_REPORT_DIR}
+
+  - user: ${env.USER}
+  - arm-user: ${env.ARM_USER}
+  - arm-token: ${env.ARM_TOKEN}
+  - arm-token-ki: ${env.ARM_TOKEN_KI}
+
+  - output-directory: ${ci-artifacts-directory}
+  - output-filename: "MANDATORY-OVERRIDE"
+  - input-directory: "MANDATORY-OVERRIDE"
+  - upload-file: "MANDATORY-OVERRIDE"
+  - upload-repository: "MANDATORY-OVERRIDE"
+  - upload-dry-run: "true"
+
+  - git-reference-for-version: HEAD
+
+
+var:
+  - common-submodule-base-directory
+
+  - build-number
+  - version
+  - version-major
+  - version-prefix
+  - version-release
+
+  - commithash-short
+  - commithash
+
+
+env:
+  - PWD
+  - DRY_RUN (default=false)
+  - DEBUG (default=false)
+
+  - USER (default=user)
+  - ARM_USER (default=${user})
+  - ARM_TOKEN
+  - ARM_TOKEN_KI
+
+  - RELEASE (default=false)
+
+  - WORKSPACE (default=${env.PWD})
+  - BUILD_DIR (default=build)
+  - REPORT_DIR (default=build/reports)
+  - ARCHIVE_ARTIFACTS_DIR (default=build/archive-artifacts)
+  - HTML_REPORT_DIR (default=build/reports/html)
+
+
+rules:
+  init:
+    - rule: init-base
+    - rule: init-from-version
+
+
+  init-base:
+    - task: create-directories
+      cmd:
+        - mkdir -p ${ci-build-directory}
+        - mkdir -p ${ci-artifacts-directory}
+        - mkdir -p ${ci-reports-directory}
+        - mkdir -p ${ci-html-reports-directory}
+        - mkdir -p .bob
+
+    - task: set-submodule-base-directory
+      cmd:
+        - echo -n "cicd/bob-rulesets" > .bob/var.common-submodule-base-directory
+        - echo -n "${submodule-base-directory}" > .bob/var.common-submodule-base-directory
+
+    - task: get-git-info
+      docker-image: images.adp-release-auto
+      cmd:
+      - git rev-parse --short ${git-reference-for-version} > .bob/var.commithash-short
+      - git rev-parse ${git-reference-for-version} > .bob/var.commithash
+
+    - task: get-version
+      docker-image: images.adp-release-auto
+      cmd:
+        - version-handler generate
+            --is-release ${release}
+            --output version
+            --user ${user}
+            --git-repo-path .
+        - echo -n "${version}" > .bob/var.version
+        - cp .bob/var.version .bob/var.image-version
+
+
+  init-from-version:
+    - task: get-build-number
+      cmd: echo -n "${var.version}" | sed -rn 's/^([0-9]+)\.([0-9]+)\.([0-9]+)-(.*)$/\4/p' > .bob/var.build-number
+
+    - task: get-version-major
+      cmd: echo -n "${var.version}" | awk -F '.' '{print $1}' > .bob/var.version-major
+
+    - task: get-version-prefix
+      cmd: cat VERSION_PREFIX | tr -d '\n' > .bob/var.version-prefix
+
+
+  init-release:
+    - rule: init
+    - task: generate-released-version
+      docker-image: images.adp-release-auto
+      cmd:
+        - version-handler convert-version
+          -s ${version} -o .bob/var.version-release
+        - cat .bob/var.version-release | cut -d '+' -f 1 > .bob/var.version-prefix
+
+
+  clean:
+    - task: clean-directories
+      cmd: 'rm -rf ${ci-build-directory}/ || :'
+
+    - task: clean-artifactory-directory
+      cmd: 'rm -rf ${ci-artifacts-directory}/ || :'
+
+    - task: clean-reports-directory
+      cmd: 'rm -rf ${ci-reports-directory}/ || :'
+
+    - task: clean-bob-work-directory
+      cmd: 'rm -rf .bob/ || :'
+
+
+  upload-file-arm:
+    - task: upload-file
+      docker-image: images.adp-release-auto
+      cmd:
+        - upload_file.sh --filename=${upload-file}
+                         --repository=${upload-repository}
+                         --api-token=${arm-token}
+                         --dry-run=${upload-dry-run}
+                         --overwrite=true
+
+
+  conditions:
+    - task: is-debug
+      cmd: '[ "${debug}" == "true" ]'
+    - task: is-dry-run
+      cmd: '[ "${dry-run}" == "true" ]'
